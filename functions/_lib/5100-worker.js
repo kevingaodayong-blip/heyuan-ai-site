@@ -487,6 +487,7 @@ async function handleApi(request, pathname) {
       const product = getProduct(payload.productId || recommendation.product?.id);
       const tier = getTier(payload.tier || recommendation.tier?.id);
       const selectedPackage = packageFor(product, tier.id, packageType);
+      const groupOrder = payload.groupOrder || {};
       const params = {
         channel: "ai_h5_beta",
         appid: "",
@@ -501,12 +502,20 @@ async function handleApi(request, pathname) {
         plan_id: recommendation.id,
         lead_score: recommendation.leadScore,
         source: payload.source || "h5",
+        group_id: groupOrder.group_id,
+        group_mode: groupOrder.group_mode || "solo",
+        group_target_card: groupOrder.group_target_card,
+        group_target_product_id: groupOrder.group_target_product_id,
+        group_target_sku: groupOrder.group_target_sku,
+        group_claimed_boxes: groupOrder.group_claimed_boxes,
+        group_remaining_boxes: groupOrder.group_remaining_boxes,
+        inviter_id: groupOrder.inviter_id,
       };
       return json({
         demoMode: true,
         orderUrl: appendParams(ORDER_BASE_URL, params),
         params,
-        message: "演示版不会真实成交，以下参数用于后续交给IT接小程序下单接口。",
+        message: "演示版不会真实成交，以下参数用于后续连接小程序下单接口。",
       });
     } catch (error) {
       return json({ error: error.message }, 400);
