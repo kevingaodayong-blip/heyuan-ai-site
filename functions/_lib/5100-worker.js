@@ -239,19 +239,24 @@ function recommendPackageType({ people, hasEnterpriseResource, scenario }) {
   return "trial_6_boxes";
 }
 
-function dailyLiterNeed(scenario, people) {
-  const perPerson = {
-    family_drink: 1.1,
-    parents: 1,
-    office: 0.55,
-    tea: 0.75,
-    gift: 0.35,
-    conference: 0.65,
+function dailyLiterRate(scenario) {
+  return {
+    family_drink: 1.6,
+    parents: 1.6,
+    office: 1.2,
+    tea: 1.1,
+    gift: 0.8,
+    conference: 1.2,
   }[scenario] || 1;
+}
+
+function dailyLiterNeed(scenario, people) {
+  const perPerson = dailyLiterRate(scenario);
   return Math.max(0.8, people * perPerson);
 }
 
 function buildUsageInsight(product, selectedPackage, scenario, people) {
+  const perPerson = dailyLiterRate(scenario);
   const dailyNeed = dailyLiterNeed(scenario, people);
   const estimatedDays = Math.max(3, Math.round(selectedPackage.totalLiters / dailyNeed));
   const monthlyCost = Math.max(1, money((selectedPackage.price / estimatedDays) * 30));
@@ -263,7 +268,7 @@ function buildUsageInsight(product, selectedPackage, scenario, people) {
         ? "按礼赠/客户维护节奏折算"
         : scenario === "conference"
           ? "按会务与办公室综合消耗折算"
-          : `按${people}人日常饮用折算`,
+          : `按${people}人、每人约${formatNumber(perPerson)}L/天折算`,
     dailyNeed: Number(dailyNeed.toFixed(1)),
     estimatedDays,
     monthlyCost,
@@ -271,6 +276,7 @@ function buildUsageInsight(product, selectedPackage, scenario, people) {
     perBoxPrice: Number((selectedPackage.price / selectedPackage.boxCount).toFixed(1)),
     chips: [
       `${selectedPackage.boxes}`,
+      `每人约${formatNumber(perPerson)}L/天`,
       `约${selectedPackage.totalLiters}L`,
       `约${formatNumber(costPerLiter)}元/L`,
       `折合${formatNumber(monthlyCost)}元/月`,
