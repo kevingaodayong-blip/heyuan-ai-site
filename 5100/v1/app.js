@@ -10,6 +10,8 @@ const orderSummary = document.querySelector("#orderSummary");
 let currentRecommendation = null;
 let currentGroupPlan = null;
 
+const MAX_GROUP_RECEIVERS = 4;
+
 function getBasePath() {
   const appScript = [...document.scripts].find((script) =>
     new URL(script.src, window.location.href).pathname.endsWith("/app.js"),
@@ -39,6 +41,12 @@ function formatMoney(value) {
     currency: "CNY",
     maximumFractionDigits: 0,
   }).format(value);
+}
+
+function formatUnitMoney(value, digits = 1) {
+  const number = Number(value || 0);
+  const fixed = number.toFixed(digits);
+  return `¥${fixed.replace(/\.0$/, "")}`;
 }
 
 function showToast(message) {
@@ -90,6 +98,15 @@ function packageButtonText(type) {
 }
 
 function packageCard(item, isRecommended) {
+  const unitBoxPrice = item.unitBoxPrice || item.price / Math.max(1, item.boxCount || 1);
+  const unitBottlePrice = item.unitBottlePrice || item.price / Math.max(1, item.bottleCount || 1);
+  const cardCount = item.cardCount || Math.max(1, Math.ceil((item.boxCount || 6) / 6));
+  const cardMetricLabel = item.type === "trial_6_boxes" ? "发货" : "水卡";
+  const cardLabel = item.type === "trial_6_boxes" ? "1组" : `${cardCount}张`;
+  const deliveryUnitText =
+    item.type === "trial_6_boxes"
+      ? `${item.cardBoxCount || 6}箱起送`
+      : `${item.cardBoxCount || 6}箱为1张起送水卡`;
   return `
     <article class="package-card ${isRecommended ? "is-recommended" : ""}">
       <div class="package-card__top">
@@ -103,7 +120,21 @@ function packageCard(item, isRecommended) {
         <strong>${formatMoney(item.price)}</strong>
         <del>${formatMoney(item.retailPrice)}</del>
       </div>
-      <p>${item.boxes}，约省 ${formatMoney(item.savings)}，较参考价低 ${item.savingRate}%</p>
+      <div class="unit-price-grid" aria-label="${item.label}价格明细">
+        <div>
+          <span>单瓶约</span>
+          <strong>${formatUnitMoney(unitBottlePrice, 2)}</strong>
+        </div>
+        <div>
+          <span>单箱约</span>
+          <strong>${formatUnitMoney(unitBoxPrice, 1)}</strong>
+        </div>
+        <div>
+          <span>${cardMetricLabel}</span>
+          <strong>${cardLabel}</strong>
+        </div>
+      </div>
+      <p>${item.boxes}，${deliveryUnitText}，约省 ${formatMoney(item.savings)}，较参考价低 ${item.savingRate}%</p>
       <button class="package-button" type="button" data-package="${item.type}">
         ${packageButtonText(item.type)}
       </button>
@@ -147,59 +178,60 @@ function groupScenarioName(scenario) {
 }
 
 function buildGroupMembers(recommendation, targetPackage) {
-  const targetBoxes = targetPackage.boxCount;
+  const cardBoxCount = targetPackage.cardBoxCount || 6;
+  const totalCards = targetPackage.cardCount || Math.max(1, Math.ceil(targetPackage.boxCount / cardBoxCount));
   const scenario = recommendation.scenario;
   const templates = {
     family_drink: [
-      ["我家", 0.22],
-      ["父母家", 0.18],
+      ["我家", 0.36],
+      ["父母家", 0.24],
       ["亲友", 0.18],
     ],
     parents: [
-      ["我先认领", 0.2],
-      ["父母家", 0.22],
-      ["兄弟姐妹", 0.16],
+      ["我先认领", 0.34],
+      ["父母家", 0.26],
+      ["兄弟姐妹", 0.18],
     ],
     office: [
-      ["行政先认领", 0.24],
-      ["会议室", 0.18],
+      ["行政先认领", 0.34],
+      ["会议室", 0.24],
       ["部门同事", 0.2],
     ],
     tea: [
-      ["茶席先用", 0.22],
-      ["茶友A", 0.18],
-      ["茶友B", 0.16],
+      ["茶席先用", 0.34],
+      ["茶友A", 0.24],
+      ["茶友B", 0.18],
     ],
     gift: [
-      ["我先认领", 0.22],
-      ["客户礼赠", 0.18],
-      ["亲友补单", 0.16],
+      ["我先认领", 0.34],
+      ["客户礼赠", 0.24],
+      ["亲友补单", 0.18],
     ],
     conference: [
-      ["会务先认领", 0.26],
-      ["办公室", 0.2],
-      ["活动备用", 0.16],
+      ["会务先认领", 0.36],
+      ["办公室", 0.24],
+      ["活动备用", 0.18],
     ],
   };
 
-  let claimedBoxes = 0;
-  const members = (templates[scenario] || templates.family_drink).map(([name, ratio], index) => {
-    const boxes = Math.max(1, Math.round(targetBoxes * ratio));
-    claimedBoxes += boxes;
+  let claimableCards = Math.max(1, totalCards - 1);
+  let claimedCards = 0;
+  const activeTemplate = templates[scenario] || templates.family_drink;
+  const members = activeTemplate.map(([name, ratio], index) => {
+    const minimumForRest = activeTemplate.length - index - 1;
+    const suggestedCards = Math.max(1, Math.round(totalCards * ratio));
+    const cards = Math.max(1, Math.min(suggestedCards, claimableCards - minimumForRest));
+    claimableCards -= cards;
+    claimedCards += cards;
     return {
       name,
-      boxes,
+      cards,
+      boxes: cards * cardBoxCount,
       role: index === 0 ? "发起人" : "已加入",
     };
   });
 
-  const maxClaimed = Math.max(1, targetBoxes - Math.max(2, Math.round(targetBoxes * 0.18)));
-  if (claimedBoxes > maxClaimed) {
-    members[members.length - 1].boxes -= claimedBoxes - maxClaimed;
-    claimedBoxes = maxClaimed;
-  }
-
-  return { members, claimedBoxes };
+  return { members, claimedCards };
 }
 
 function buildGroupPlan(recommendation, targetPackageType) {
@@ -209,25 +241,31 @@ function buildGroupPlan(recommendation, targetPackageType) {
     ? targetPackageType
     : defaultTarget;
   const targetPackage = recommendation.packages.find((item) => item.type === normalizedTarget);
-  const { members, claimedBoxes } = buildGroupMembers(recommendation, targetPackage);
-  const remainingBoxes = Math.max(0, targetPackage.boxCount - claimedBoxes);
-  const progress = Math.min(98, Math.round((claimedBoxes / targetPackage.boxCount) * 100));
-  const unitPrice = Math.round(targetPackage.price / targetPackage.boxCount);
+  const cardBoxCount = targetPackage.cardBoxCount || 6;
+  const totalCards = targetPackage.cardCount || Math.max(1, Math.ceil(targetPackage.boxCount / cardBoxCount));
+  const { members, claimedCards } = buildGroupMembers(recommendation, targetPackage);
+  const remainingCards = Math.max(0, totalCards - claimedCards);
+  const progress = Math.min(98, Math.round((claimedCards / totalCards) * 100));
+  const unitCardPrice = targetPackage.unitCardPrice || targetPackage.price / totalCards;
   const sceneName = groupScenarioName(recommendation.scenario);
   const groupId = `grp_${recommendation.id.slice(0, 8)}_${normalizedTarget}`;
-  const inviteText = `我正在发起5100${recommendation.product.name}${groupTargetName(normalizedTarget)}凑单，目标是${targetPackage.boxes}，现在已凑${claimedBoxes}箱，还差${remainingBoxes}箱。适合${sceneName}一起按需配送，不改变原来的水卡规格，想一起试试的可以点进来参与。`;
+  const inviteText = `我正在发起5100${recommendation.product.name}${groupTargetName(normalizedTarget)}拼卡，目标是${totalCards}张实体水卡（每张${cardBoxCount}箱起送），现在已认领${claimedCards}张，还差${remainingCards}张。建议2-${MAX_GROUP_RECEIVERS}人参与，水卡默认统一寄给发起人，凑满后仍按标准水卡兑换。`;
 
   return {
     groupId,
     targetPackageType: normalizedTarget,
     targetLabel: groupTargetName(normalizedTarget),
-    title: `邀请${sceneName}一起凑${recommendation.product.name}${groupTargetName(normalizedTarget)}`,
-    subtitle: "先看看每家认领多少箱，凑满后按标准水卡兑换。",
+    title: `邀请${sceneName}一起拼${recommendation.product.name}${groupTargetName(normalizedTarget)}`,
+    subtitle: `按实体水卡张数认领，建议2-${MAX_GROUP_RECEIVERS}人参与，默认统一寄给发起人。`,
     targetPackage,
-    claimedBoxes,
-    remainingBoxes,
+    totalCards,
+    claimedCards,
+    remainingCards,
+    cardBoxCount,
+    maxReceivers: MAX_GROUP_RECEIVERS,
+    shippingMode: "水卡默认统一寄给发起人",
     progress,
-    unitPrice,
+    unitCardPrice,
     members,
     inviteText,
     params: {
@@ -236,8 +274,14 @@ function buildGroupPlan(recommendation, targetPackageType) {
       group_target_card: normalizedTarget,
       group_target_product_id: recommendation.product.id,
       group_target_sku: recommendation.product.sku,
-      group_claimed_boxes: claimedBoxes,
-      group_remaining_boxes: remainingBoxes,
+      group_card_box_count: cardBoxCount,
+      group_total_cards: totalCards,
+      group_claimed_cards: claimedCards,
+      group_remaining_cards: remainingCards,
+      group_claimed_boxes: claimedCards * cardBoxCount,
+      group_remaining_boxes: remainingCards * cardBoxCount,
+      group_max_receivers: MAX_GROUP_RECEIVERS,
+      group_shipping_mode: "leader_collects_cards",
       inviter_id: "v1_user",
     },
   };
@@ -247,14 +291,14 @@ function groupOrderCard(plan) {
   return `
     <div class="group-order-card__head">
       <div>
-        <span>拼单凑卡</span>
+        <span>实体水卡拼卡</span>
         <strong>${plan.title}</strong>
         <p>${plan.subtitle}</p>
       </div>
-      <em>不改水卡张数</em>
+      <em>最多${plan.maxReceivers}人</em>
     </div>
 
-    <div class="group-target-switch" role="group" aria-label="选择拼单目标">
+    <div class="group-target-switch" role="group" aria-label="选择拼卡目标">
       <button class="${plan.targetPackageType === "half_ton_card" ? "is-active" : ""}" type="button" data-group-target="half_ton_card">
         凑半吨卡
       </button>
@@ -263,15 +307,15 @@ function groupOrderCard(plan) {
       </button>
     </div>
 
-    <div class="group-progress" aria-label="拼单进度">
+    <div class="group-progress" aria-label="拼卡进度">
       <div class="group-progress__top">
-        <strong>已凑 ${plan.claimedBoxes}/${plan.targetPackage.boxCount}箱</strong>
-        <span>还差 ${plan.remainingBoxes}箱</span>
+        <strong>已认领 ${plan.claimedCards}/${plan.totalCards}张</strong>
+        <span>还差 ${plan.remainingCards}张</span>
       </div>
       <div class="group-progress__track">
         <span class="group-progress__bar" style="width: ${plan.progress}%"></span>
       </div>
-      <p>${plan.targetPackage.label}保持原规格：${plan.targetPackage.boxes}，整卡价 ${formatMoney(plan.targetPackage.price)}，约 ${formatMoney(plan.unitPrice)}/箱。</p>
+      <p>${plan.targetPackage.label}共${plan.totalCards}张实体水卡，每张${plan.cardBoxCount}箱；整卡价 ${formatMoney(plan.targetPackage.price)}，约 ${formatMoney(plan.unitCardPrice)}/张。${plan.shippingMode}，避免多人分寄增加运费。</p>
     </div>
 
     <div class="group-members">
@@ -281,7 +325,7 @@ function groupOrderCard(plan) {
             <div>
               <span>${member.role}</span>
               <strong>${member.name}</strong>
-              <small>${member.boxes}箱</small>
+              <small>${member.cards}张 · ${member.boxes}箱</small>
             </div>
           `,
         )
@@ -289,8 +333,8 @@ function groupOrderCard(plan) {
     </div>
 
     <div class="group-actions">
-      <button class="package-button" id="groupParamsButton" type="button">确认拼单方案</button>
-      <button class="small-action small-action--wide" id="copyGroupInviteButton" type="button">复制微信群邀请</button>
+      <button class="package-button" id="groupParamsButton" type="button">确认拼卡方案</button>
+      <button class="small-action small-action--wide" id="copyGroupInviteButton" type="button">复制拼卡邀请</button>
     </div>
   `;
 }
@@ -313,12 +357,115 @@ function renderUsageInsight(usage) {
     <div>
       <span>测算结论</span>
       <strong>${usage.title}</strong>
-      <p>${usage.sceneText}，约${usage.dailyNeed}L/天，折合${formatMoney(usage.monthlyCost)}/月。</p>
+      <p>${usage.sceneText}，约${usage.dailyNeed}L/天，折合${formatMoney(usage.monthlyCost)}/月；单箱约${formatUnitMoney(usage.perBoxPrice, 1)}。</p>
     </div>
     <div class="usage-chips">
       ${usage.chips.map((chip) => `<span>${chip}</span>`).join("")}
     </div>
   `;
+}
+
+function comparisonCard(item) {
+  return `
+    <article class="comparison-card ${item.highlight ? "is-highlight" : ""}">
+      <div class="comparison-card__top">
+        <div>
+          <span>${item.label}</span>
+          <strong>${item.name}</strong>
+        </div>
+        ${item.highlight ? "<em>推荐</em>" : ""}
+      </div>
+      <div class="comparison-price">
+        <div>
+          <span>单箱约</span>
+          <b>${item.boxPrice}</b>
+        </div>
+        <div>
+          <span>单瓶约</span>
+          <b>${item.bottlePrice}</b>
+        </div>
+        <div>
+          <span>每升约</span>
+          <b>${item.literPrice}</b>
+        </div>
+      </div>
+      <p>${item.note}</p>
+    </article>
+  `;
+}
+
+function renderPriceComparison(recommendation) {
+  const selected = recommendation.recommendedPackage;
+  const unitBoxPrice = selected.unitBoxPrice || selected.price / Math.max(1, selected.boxCount);
+  const unitBottlePrice = selected.unitBottlePrice || selected.price / Math.max(1, selected.bottleCount || 1);
+  const unitLiterPrice = selected.price / Math.max(1, selected.totalLiters || 1);
+  const items = [
+    {
+      label: "5100",
+      name: `${recommendation.product.name} · ${recommendation.product.spec}`,
+      boxPrice: formatUnitMoney(unitBoxPrice, 1),
+      bottlePrice: formatUnitMoney(unitBottlePrice, 2),
+      literPrice: formatUnitMoney(unitLiterPrice, 1),
+      note: "高端冰川矿泉水定位，看每升成本更直观，适合长期家庭和办公饮用。",
+      highlight: true,
+    },
+    {
+      label: "进口高端水参考",
+      name: "依云 Evian 500ml x 24瓶",
+      boxPrice: "约¥108",
+      bottlePrice: "约¥4.5",
+      literPrice: "约¥9/L",
+      note: "公开电商常见活动参考价，实际价格会随平台和促销变化。",
+    },
+    {
+      label: "进口高端水参考",
+      name: "FIJI 斐济 500ml x 24瓶",
+      boxPrice: "约¥220+",
+      bottlePrice: "约¥9+",
+      literPrice: "约¥18+/L",
+      note: "进口高端水参考价区间，跨境、地区和渠道差异较大。",
+    },
+  ];
+
+  document.querySelector("#priceComparison").innerHTML = items.map(comparisonCard).join("");
+}
+
+function qualityCard(item) {
+  return `
+    <article class="quality-card">
+      <span>${item.label}</span>
+      <strong>${item.title}</strong>
+      <p>${item.body}</p>
+    </article>
+  `;
+}
+
+function renderQualityList(recommendation) {
+  const boxPrice = recommendation.recommendedPackage.unitBoxPrice || recommendation.recommendedPackage.price / recommendation.recommendedPackage.boxCount;
+  const items = [
+    {
+      label: "水源",
+      title: "5100米冰川矿泉水",
+      body: "来自西藏高海拔冰川水源，适合高端饮用、接待和礼赠表达。",
+    },
+    {
+      label: "指标",
+      title: "锂、锶、偏硅酸",
+      body: "同时具备多个容易被用户记住的天然矿物质指标，更容易讲清品质。",
+    },
+    {
+      label: "口感",
+      title: "低钠、弱碱、清冽",
+      body: "定位高端日常饮水，不只讲进口标签，更看水源和长期饮用体验。",
+    },
+    {
+      label: "价格",
+      title: `水卡单箱约${formatUnitMoney(boxPrice, 1)}`,
+      body: "和进口高端水同台比较，5100更适合家庭、办公室长期复购。",
+    },
+  ];
+
+  document.querySelector("#qualityList").innerHTML = items.map(qualityCard).join("");
 }
 
 function scenarioName(scenario) {
@@ -368,7 +515,7 @@ function customerFaqs(recommendation) {
     },
     {
       title: "可以和亲友一起买吗？",
-      answer: "可以发起凑卡计划，大家按箱数认领，凑满后仍按半吨卡或一吨卡的标准规格兑换。",
+      answer: `可以发起拼卡计划，建议2-${MAX_GROUP_RECEIVERS}人按实体水卡张数认领；水卡默认统一寄给发起人，减少多人分寄带来的运费成本。`,
     },
   ];
 }
@@ -422,8 +569,9 @@ function orderSummaryMarkup({ selectedPackage, recommendation, orderUrl, groupPl
   ];
 
   if (groupPlan) {
-    rows.push(["拼单目标", `${groupPlan.targetLabel} · 已凑 ${groupPlan.claimedBoxes}箱`]);
-    rows.push(["还差箱数", `${groupPlan.remainingBoxes}箱`]);
+    rows.push(["拼卡目标", `${groupPlan.targetLabel} · 已认领 ${groupPlan.claimedCards}/${groupPlan.totalCards}张`]);
+    rows.push(["还差水卡", `${groupPlan.remainingCards}张`]);
+    rows.push(["收卡方式", `${groupPlan.shippingMode} · 最多${groupPlan.maxReceivers}人`]);
   }
 
   return `
@@ -450,7 +598,7 @@ function orderSummaryMarkup({ selectedPackage, recommendation, orderUrl, groupPl
 
 function showOrderDialog({ selectedPackage, recommendation, data, groupPlan }) {
   dialogMessage.textContent = groupPlan
-    ? "已为你整理好拼单方案，可先发给亲友确认认领箱数。"
+    ? "已为你整理好拼卡方案，可先发给亲友确认认领水卡张数。"
     : "已为你整理好选择内容。";
   orderSummary.innerHTML = orderSummaryMarkup({
     selectedPackage,
@@ -530,7 +678,7 @@ function bindGroupOrderButtons() {
   });
 
   document.querySelector("#copyGroupInviteButton")?.addEventListener("click", async () => {
-    await copyTextToClipboard(currentGroupPlan?.inviteText, "拼单邀请已复制，可以发微信群");
+    await copyTextToClipboard(currentGroupPlan?.inviteText, "拼卡邀请已复制，可以发微信群");
   });
 
   document.querySelector("#groupParamsButton")?.addEventListener("click", async () => {
@@ -582,7 +730,9 @@ function renderRecommendation(recommendation) {
     .map((item) => packageCard(item, item.type === recommendation.recommendedPackage.type))
     .join("");
 
+  renderPriceComparison(recommendation);
   renderGroupOrder();
+  renderQualityList(recommendation);
 
   document.querySelector("#objectionList").innerHTML = customerFaqs(recommendation)
     .map(objectionCard)

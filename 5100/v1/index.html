@@ -3,29 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>5100 选水顾问</title>
+    <title>5100 专属水管家</title>
     <meta
       name="description"
-      content="5100选水顾问，按饮水场景推荐体验装、半吨卡、一吨卡和亲友凑卡方案。"
+      content="5100专属水管家，按饮水场景推荐体验装、半吨卡、一吨卡和亲友拼卡方案。"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260702-customer2" />
+    <link rel="stylesheet" href="./styles.css?v=20260702-waterbutler" />
   </head>
   <body>
     <main class="app-shell">
       <section class="hero" aria-labelledby="hero-title">
-        <img class="hero__image" src="./assets/manual/hero.jpg" alt="" />
-        <div class="hero__scrim"></div>
         <header class="topbar">
           <span class="brand-mark">5100 西藏冰川矿泉水</span>
           <span class="beta-pill">专属购水入口</span>
         </header>
         <div class="hero__content">
           <p class="eyebrow">六箱体验装 · 半吨卡 · 一吨卡</p>
-          <h1 id="hero-title">30秒选好适合你的5100</h1>
+          <h1 id="hero-title">5100 专属水管家</h1>
           <p class="hero-copy">
-            选用途和人数，快速看到建议型号、预计用量和购买方式。下单前可在小程序确认价格与配送。
+            选用途和人数，快速看到建议型号、单瓶单箱价格、预计用量和购买方式。下单前可在小程序确认价格与配送。
           </p>
         </div>
+        <img class="hero__image" src="./assets/manual/hero.jpg" alt="" />
       </section>
 
       <section class="panel" aria-labelledby="wizard-title">
@@ -40,8 +39,9 @@
         <div class="proof-rail" aria-label="5100核心卖点">
           <span>5100米冰川水源</span>
           <span>锂锶偏硅酸</span>
+          <span>单瓶单箱算清楚</span>
           <span>六箱先体验</span>
-          <span>可邀请亲友凑卡</span>
+          <span>可邀请亲友拼卡</span>
         </div>
 
         <form id="planForm" class="wizard">
@@ -194,15 +194,27 @@
 
         <div class="section-line">
           <h3>选择购买方式</h3>
-          <p>可先体验，也可直接买水卡。</p>
+          <p>单瓶、单箱和水卡都算清楚。</p>
         </div>
         <div id="packageList" class="package-list"></div>
 
         <div class="section-line">
-          <h3>亲友拼单凑卡</h3>
-          <p>一起买，仍按标准水卡兑换。</p>
+          <h3>高端水价格对比</h3>
+          <p>同样按整箱看，更容易判断价值。</p>
+        </div>
+        <div id="priceComparison" class="comparison-list"></div>
+
+        <div class="section-line">
+          <h3>亲友拼卡</h3>
+          <p>按实体水卡张数凑，不拆水卡规则。</p>
         </div>
         <article id="groupOrderPanel" class="group-order-card"></article>
+
+        <div class="section-line">
+          <h3>国货之光 5100</h3>
+          <p>高端冰川水，日常也喝得起。</p>
+        </div>
+        <div id="qualityList" class="quality-list"></div>
 
         <div class="section-line">
           <h3>购买前常见问题</h3>
@@ -212,7 +224,7 @@
 
         <div class="section-line">
           <h3>为什么适合你</h3>
-          <p>把产品说明书里重要的部分挑出来。</p>
+          <p>只看与你相关的重点。</p>
         </div>
         <div id="educationList" class="education-list"></div>
 
@@ -242,6 +254,6 @@
       </form>
     </dialog>
 
-    <script src="./app.js?v=20260702-customer2" type="module"></script>
+    <script src="./app.js?v=20260702-waterbutler" type="module"></script>
   </body>
 </html>

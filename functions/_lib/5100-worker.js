@@ -15,6 +15,8 @@ const products = {
     name: "商务款",
     sku: "business-330ml",
     spec: "330ml x 24瓶",
+    volumeMl: 330,
+    bottlesPerBox: 24,
     shortUse: "会议、接待、活动用水",
     image: "/assets/manual/business.jpg",
     litersPerBox: 7.92,
@@ -36,6 +38,8 @@ const products = {
     name: "经典款",
     sku: "classic-500ml",
     spec: "500ml x 24瓶",
+    volumeMl: 500,
+    bottlesPerBox: 24,
     shortUse: "家庭日饮、办公室、轻礼赠",
     image: "/assets/manual/classic.jpg",
     litersPerBox: 12,
@@ -57,6 +61,8 @@ const products = {
     name: "家庭款",
     sku: "family-1500ml",
     spec: "1.5L x 12瓶",
+    volumeMl: 1500,
+    bottlesPerBox: 12,
     shortUse: "家庭、父母、长期饮用",
     image: "/assets/manual/family.jpg",
     litersPerBox: 18,
@@ -78,6 +84,8 @@ const products = {
     name: "泡茶款",
     sku: "tea-4l",
     spec: "4L x 4瓶",
+    volumeMl: 4000,
+    bottlesPerBox: 4,
     shortUse: "泡茶、茶室、高端会务",
     image: "/assets/manual/tea.jpg",
     litersPerBox: 16,
@@ -157,6 +165,7 @@ function trialPrice(product, tierId) {
 function packageFor(product, tierId, type) {
   const tierPrices = product.prices[tierId] || product.prices.vip_b;
   const trialMainBoxes = product.id === "tea" ? 5 : 6;
+  const cardBoxCount = 6;
   const packages = {
     trial_6_boxes: {
       type: "trial_6_boxes",
@@ -192,7 +201,24 @@ function packageFor(product, tierId, type) {
       role: "长期饮用主成交",
     },
   };
-  return packages[type];
+  const selected = packages[type];
+  const bottleCount = selected.boxCount * product.bottlesPerBox;
+  const cardCount =
+    selected.type === "trial_6_boxes"
+      ? 1
+      : Math.max(1, Math.ceil(selected.boxCount / cardBoxCount));
+
+  return {
+    ...selected,
+    volumeMl: product.volumeMl,
+    bottlesPerBox: product.bottlesPerBox,
+    bottleCount,
+    cardBoxCount,
+    cardCount,
+    unitBottlePrice: Number((selected.price / bottleCount).toFixed(2)),
+    unitBoxPrice: Number((selected.price / selected.boxCount).toFixed(1)),
+    unitCardPrice: Number((selected.price / cardCount).toFixed(1)),
+  };
 }
 
 function productPackages(product, tierId) {
@@ -507,8 +533,14 @@ async function handleApi(request, pathname) {
         group_target_card: groupOrder.group_target_card,
         group_target_product_id: groupOrder.group_target_product_id,
         group_target_sku: groupOrder.group_target_sku,
+        group_card_box_count: groupOrder.group_card_box_count,
+        group_total_cards: groupOrder.group_total_cards,
+        group_claimed_cards: groupOrder.group_claimed_cards,
+        group_remaining_cards: groupOrder.group_remaining_cards,
         group_claimed_boxes: groupOrder.group_claimed_boxes,
         group_remaining_boxes: groupOrder.group_remaining_boxes,
+        group_max_receivers: groupOrder.group_max_receivers,
+        group_shipping_mode: groupOrder.group_shipping_mode,
         inviter_id: groupOrder.inviter_id,
       };
       return json({

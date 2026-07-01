@@ -48,32 +48,24 @@ button {
 
 .hero {
   position: relative;
-  min-height: 72vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: max(18px, env(safe-area-inset-top)) 20px 34px;
-  color: #fff;
-}
-
-.hero__image,
-.hero__scrim {
-  position: absolute;
-  inset: 0;
+  gap: 18px;
+  padding: max(18px, env(safe-area-inset-top)) 20px 22px;
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, #ffffff 0%, #eef8fb 58%, #f9fcfb 100%);
 }
 
 .hero__image {
+  position: relative;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
-}
-
-.hero__scrim {
-  background:
-    linear-gradient(180deg, rgba(8, 22, 37, 0.54) 0%, rgba(8, 22, 37, 0.08) 45%, rgba(8, 22, 37, 0.78) 100%),
-    linear-gradient(90deg, rgba(8, 22, 37, 0.36), rgba(8, 22, 37, 0));
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 8px;
+  background: #e7f6fb;
 }
 
 .topbar,
@@ -94,18 +86,19 @@ button {
 }
 
 .beta-pill {
-  border: 1px solid rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(77, 143, 107, 0.28);
   border-radius: 999px;
   padding: 4px 10px;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--green);
+  background: rgba(77, 143, 107, 0.08);
 }
 
 .eyebrow {
   margin: 0 0 10px;
   font-size: 12px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--green);
 }
 
 .eyebrow--dark {
@@ -120,17 +113,18 @@ p {
 }
 
 h1 {
-  max-width: 9em;
+  max-width: 8em;
   margin-bottom: 14px;
-  font-size: 44px;
-  line-height: 1.06;
+  color: var(--navy);
+  font-size: 40px;
+  line-height: 1.08;
   font-weight: 800;
 }
 
 .hero-copy {
   max-width: 27em;
   margin-bottom: 0;
-  color: rgba(255, 255, 255, 0.86);
+  color: var(--muted);
   font-size: 16px;
   line-height: 1.65;
 }
@@ -141,11 +135,10 @@ h1 {
 }
 
 .panel {
-  margin-top: -20px;
   position: relative;
   z-index: 2;
   background: var(--paper);
-  border-radius: 8px 8px 0 0;
+  border-radius: 0;
 }
 
 .panel-head,
@@ -454,8 +447,8 @@ legend {
   height: 100%;
   min-height: 104px;
   display: block;
-  object-fit: cover;
-  object-position: top center;
+  object-fit: contain;
+  object-position: center;
   background: #e8f3f7;
 }
 
@@ -541,7 +534,9 @@ legend {
 .package-list,
 .alternative-list,
 .objection-list,
-.enablement-list {
+.enablement-list,
+.comparison-list,
+.quality-list {
   display: grid;
   gap: 10px;
   margin-top: 12px;
@@ -666,6 +661,117 @@ legend {
   color: var(--muted);
   line-height: 1.5;
   font-size: 13px;
+}
+
+.unit-price-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.unit-price-grid div {
+  min-height: 64px;
+  border: 1px solid rgba(12, 39, 64, 0.1);
+  border-radius: 8px;
+  padding: 9px 8px;
+  background: #f8fbfb;
+}
+
+.unit-price-grid span,
+.comparison-card span,
+.quality-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.unit-price-grid strong {
+  display: block;
+  margin-top: 6px;
+  color: var(--navy);
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.comparison-card,
+.quality-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  background: #fff;
+}
+
+.comparison-card.is-highlight {
+  border-color: var(--green);
+  background: linear-gradient(180deg, #f5fbf7, #fff);
+}
+
+.comparison-card__top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.comparison-card strong,
+.quality-card strong {
+  display: block;
+  color: var(--navy);
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+.comparison-card em {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: #fff;
+  background: var(--green);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.comparison-price {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.comparison-price div {
+  border-radius: 8px;
+  padding: 10px;
+  background: #f8fbfb;
+}
+
+.comparison-price b {
+  display: block;
+  margin-top: 5px;
+  color: #d84646;
+  font-size: 16px;
+}
+
+.comparison-card p,
+.quality-card p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.quality-list {
+  grid-template-columns: 1fr 1fr;
+}
+
+.quality-card {
+  min-height: 120px;
+  background: linear-gradient(180deg, #ffffff, #f8fbfb);
+}
+
+.quality-card strong {
+  margin-top: 6px;
 }
 
 .package-button {
@@ -862,8 +968,8 @@ legend {
   width: 74px;
   height: 74px;
   border-radius: 8px;
-  object-fit: cover;
-  object-position: top center;
+  object-fit: contain;
+  object-position: center;
   background: #e8f3f7;
 }
 
@@ -908,12 +1014,12 @@ legend {
 
 .education-item img {
   width: calc(100% + 28px);
-  max-height: 230px;
+  height: auto;
   display: block;
   margin: -14px -14px 12px;
   border-radius: 8px 8px 0 0;
-  object-fit: cover;
-  object-position: top center;
+  object-fit: contain;
+  object-position: center;
   background: #e8f3f7;
 }
 
