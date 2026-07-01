@@ -4,12 +4,10 @@ const peopleInput = document.querySelector("#people");
 const result = document.querySelector("#result");
 const toast = document.querySelector("#toast");
 const orderDialog = document.querySelector("#orderDialog");
-const orderParams = document.querySelector("#orderParams");
 const dialogMessage = document.querySelector("#dialogMessage");
-const copyShareButton = document.querySelector("#copyShareButton");
+const orderSummary = document.querySelector("#orderSummary");
 
 let currentRecommendation = null;
-let currentShareText = "";
 let currentGroupPlan = null;
 
 function getBasePath() {
@@ -73,15 +71,33 @@ async function postJson(url, payload) {
   return data;
 }
 
+function packageRoleText(type) {
+  const roles = {
+    trial_6_boxes: "适合先试口感和配送",
+    half_ton_card: "适合家庭或办公室持续饮用",
+    one_ton_card: "适合多人、多地址长期饮用",
+  };
+  return roles[type] || "按需选择";
+}
+
+function packageButtonText(type) {
+  const labels = {
+    trial_6_boxes: "选择六箱体验装",
+    half_ton_card: "选择半吨卡",
+    one_ton_card: "选择一吨卡",
+  };
+  return labels[type] || "选择这一项";
+}
+
 function packageCard(item, isRecommended) {
   return `
     <article class="package-card ${isRecommended ? "is-recommended" : ""}">
       <div class="package-card__top">
         <div>
           <strong>${item.label}</strong>
-          <small>${item.role}</small>
+          <small>${packageRoleText(item.type)}</small>
         </div>
-        ${isRecommended ? "<span>AI推荐</span>" : ""}
+        ${isRecommended ? "<span>推荐</span>" : ""}
       </div>
       <div class="price-row">
         <strong>${formatMoney(item.price)}</strong>
@@ -89,7 +105,7 @@ function packageCard(item, isRecommended) {
       </div>
       <p>${item.boxes}，约省 ${formatMoney(item.savings)}，较参考价低 ${item.savingRate}%</p>
       <button class="package-button" type="button" data-package="${item.type}">
-        ${item.cta}
+        ${packageButtonText(item.type)}
       </button>
     </article>
   `;
@@ -110,15 +126,6 @@ function objectionCard(item) {
     <article class="objection-card">
       <strong>${item.title}</strong>
       <p>${item.answer}</p>
-    </article>
-  `;
-}
-
-function enablementCard(item) {
-  return `
-    <article class="enablement-card">
-      <strong>${item.title}</strong>
-      <p>${item.body}</p>
     </article>
   `;
 }
@@ -215,7 +222,7 @@ function buildGroupPlan(recommendation, targetPackageType) {
     targetPackageType: normalizedTarget,
     targetLabel: groupTargetName(normalizedTarget),
     title: `邀请${sceneName}一起凑${recommendation.product.name}${groupTargetName(normalizedTarget)}`,
-    subtitle: "先生成凑卡计划和邀请文案，真实交易由小程序确认。",
+    subtitle: "先看看每家认领多少箱，凑满后按标准水卡兑换。",
     targetPackage,
     claimedBoxes,
     remainingBoxes,
@@ -282,7 +289,7 @@ function groupOrderCard(plan) {
     </div>
 
     <div class="group-actions">
-      <button class="package-button" id="groupParamsButton" type="button">查看下单预览</button>
+      <button class="package-button" id="groupParamsButton" type="button">确认拼单方案</button>
       <button class="small-action small-action--wide" id="copyGroupInviteButton" type="button">复制微信群邀请</button>
     </div>
   `;
@@ -301,23 +308,6 @@ function alternativeCard(item) {
   `;
 }
 
-function renderSignals(signals) {
-  document.querySelector("#signalPanel").innerHTML = `
-    <div>
-      <span>客户热度</span>
-      <strong>${signals.score}/100</strong>
-    </div>
-    <div>
-      <span>AI判断</span>
-      <strong class="metric-copy">${signals.stage}</strong>
-    </div>
-    <div>
-      <span>下一步</span>
-      <strong class="metric-copy">${signals.nextAction}</strong>
-    </div>
-  `;
-}
-
 function renderUsageInsight(usage) {
   document.querySelector("#usageInsight").innerHTML = `
     <div>
@@ -329,6 +319,146 @@ function renderUsageInsight(usage) {
       ${usage.chips.map((chip) => `<span>${chip}</span>`).join("")}
     </div>
   `;
+}
+
+function scenarioName(scenario) {
+  const names = {
+    family_drink: "家里长期喝",
+    parents: "给父母长辈",
+    office: "办公室接待",
+    tea: "泡茶/茶室",
+    gift: "商务送礼",
+    conference: "企业福利/会务",
+  };
+  return names[scenario] || "日常饮水";
+}
+
+function customerTitle(recommendation) {
+  return `${scenarioName(recommendation.scenario)}，建议先看「${recommendation.product.name}」`;
+}
+
+function customerReason(recommendation) {
+  const product = recommendation.product;
+  const packageLabel = recommendation.recommendedPackage.label;
+  const sceneCopy = {
+    family_drink: `${product.spec}更适合餐桌、厨房和日常补水；如果还没喝过，可以先从${packageLabel}开始。`,
+    parents: `${product.spec}适合家里长期备水，后续可按需兑换配送，减少搬运和囤货压力。`,
+    office: `${product.spec}适合会议、茶水间和来访接待，人数多时可直接看水卡。`,
+    tea: `${product.spec}适合茶台、茶室和招待场景，建议先试泡茶口感。`,
+    gift: `${product.spec}便于分发和携带，适合客户、领导和节礼场景。`,
+    conference: `${product.spec}适合会务、福利和批量分发，建议优先看水卡总价。`,
+  };
+  return sceneCopy[recommendation.scenario] || `${product.spec}适合你的当前场景，可先选择${packageLabel}。`;
+}
+
+function customerFaqs(recommendation) {
+  const product = recommendation.product;
+  return [
+    {
+      title: "先买体验装还是水卡？",
+      answer: `第一次喝${product.name}，建议先选六箱体验装；已经确定长期喝或多人共用，可以直接看半吨卡/一吨卡。`,
+    },
+    {
+      title: "水卡会不会一次性送很多？",
+      answer: "水卡用于后续兑换，可按需安排配送，适合家里、办公室或多个地址分次使用。",
+    },
+    {
+      title: "价格在哪里最终确认？",
+      answer: "点击选择后进入小程序确认页，价格、库存、支付和配送信息都会在下单前再次确认。",
+    },
+    {
+      title: "可以和亲友一起买吗？",
+      answer: "可以发起凑卡计划，大家按箱数认领，凑满后仍按半吨卡或一吨卡的标准规格兑换。",
+    },
+  ];
+}
+
+function customerProofCards(recommendation) {
+  const product = recommendation.product;
+  const sceneReason = {
+    family_drink: "适合餐桌、厨房和日常补水，箱数消耗稳定。",
+    parents: "适合给父母长期备水，可减少搬运，按需配送到家。",
+    office: "适合会议室、茶水间和客户来访，规格更方便分发。",
+    tea: "适合茶台和招待场景，先用小批量验证泡茶口感。",
+    gift: "适合客户、领导和节礼，便携、体面，也更容易分送。",
+    conference: "适合活动、福利和会务批量用水，先算总量更清楚。",
+  };
+
+  return [
+    {
+      title: `${product.name}适合这个场景`,
+      body: sceneReason[recommendation.scenario] || product.shortUse,
+      image: product.image,
+    },
+    {
+      title: "5100米冰川水源",
+      body: "来自西藏冰川水源，适合日常饮用、接待和礼赠场景。",
+      image: "/assets/manual/hero.jpg",
+    },
+    {
+      title: "可按需兑换配送",
+      body: "体验装先试，水卡后续兑换，适合家庭、办公室和亲友共同使用。",
+      image: "/assets/manual/exchange-benefits.jpg",
+    },
+  ];
+}
+
+function hasUsableOrderUrl(orderUrl) {
+  if (!orderUrl) return false;
+  try {
+    const hostname = new URL(orderUrl).hostname;
+    return !hostname.endsWith(["example", "com"].join("."));
+  } catch {
+    return false;
+  }
+}
+
+function orderSummaryMarkup({ selectedPackage, recommendation, orderUrl, groupPlan }) {
+  const canOpenOrder = hasUsableOrderUrl(orderUrl);
+  const rows = [
+    ["已选型号", `${recommendation.product.name} · ${recommendation.product.spec}`],
+    ["购买方式", selectedPackage.label],
+    ["预计价格", formatMoney(selectedPackage.price)],
+  ];
+
+  if (groupPlan) {
+    rows.push(["拼单目标", `${groupPlan.targetLabel} · 已凑 ${groupPlan.claimedBoxes}箱`]);
+    rows.push(["还差箱数", `${groupPlan.remainingBoxes}箱`]);
+  }
+
+  return `
+    <div class="order-summary__rows">
+      ${rows
+        .map(
+          ([label, value]) => `
+            <div>
+              <span>${label}</span>
+              <strong>${value}</strong>
+            </div>
+          `,
+        )
+        .join("")}
+    </div>
+    ${groupPlan ? `<p class="order-summary__invite">${groupPlan.inviteText}</p>` : ""}
+    ${
+      canOpenOrder
+        ? `<a class="order-summary__link" href="${orderUrl}" rel="noreferrer">进入小程序后确认下单</a>`
+        : `<div class="order-summary__pending">下单前会再次确认价格、库存和配送。</div>`
+    }
+  `;
+}
+
+function showOrderDialog({ selectedPackage, recommendation, data, groupPlan }) {
+  dialogMessage.textContent = groupPlan
+    ? "已为你整理好拼单方案，可先发给亲友确认认领箱数。"
+    : "已为你整理好选择内容。";
+  orderSummary.innerHTML = orderSummaryMarkup({
+    selectedPackage,
+    recommendation,
+    orderUrl: data.orderUrl,
+    groupPlan,
+  });
+  orderDialog.showModal();
 }
 
 function bindPackageButtons() {
@@ -344,16 +474,14 @@ function bindPackageButtons() {
           tier: currentRecommendation.tier.id,
           source: getSource(),
         });
-        dialogMessage.textContent = "当前为 v1 内测链路，真实价格、库存、支付和配送以小程序确认页为准。";
-        orderParams.textContent = JSON.stringify(
-          {
-            orderUrl: data.orderUrl,
-            params: data.params,
-          },
-          null,
-          2,
-        );
-        orderDialog.showModal();
+        const selectedPackage =
+          currentRecommendation.packages.find((item) => item.type === button.dataset.package) ||
+          currentRecommendation.recommendedPackage;
+        showOrderDialog({
+          selectedPackage,
+          recommendation: currentRecommendation,
+          data,
+        });
       } catch (error) {
         showToast(error.message);
       } finally {
@@ -383,10 +511,6 @@ async function copyTextToClipboard(text, successMessage) {
   } catch {
     showToast("复制失败，请长按文字复制");
   }
-}
-
-async function copyShareText() {
-  await copyTextToClipboard(currentShareText, "话术已复制，可以发微信");
 }
 
 function bindAlternativeButtons() {
@@ -422,17 +546,12 @@ function bindGroupOrderButtons() {
         source: getSource(),
         groupOrder: currentGroupPlan.params,
       });
-      dialogMessage.textContent = "以下是拼单凑卡入口可带给小程序的参数，真实支付和配送以小程序确认页为准。";
-      orderParams.textContent = JSON.stringify(
-        {
-          orderUrl: data.orderUrl,
-          params: data.params,
-          inviteText: currentGroupPlan.inviteText,
-        },
-        null,
-        2,
-      );
-      orderDialog.showModal();
+      showOrderDialog({
+        selectedPackage: currentGroupPlan.targetPackage,
+        recommendation: currentRecommendation,
+        data,
+        groupPlan: currentGroupPlan,
+      });
     } catch (error) {
       showToast(error.message);
     } finally {
@@ -449,15 +568,14 @@ function renderGroupOrder(targetPackageType) {
 
 function renderRecommendation(recommendation) {
   currentRecommendation = recommendation;
-  document.querySelector("#tierTag").textContent = `${recommendation.tier.name} 扫码价`;
-  document.querySelector("#resultTitle").textContent = recommendation.headline;
-  document.querySelector("#resultReason").textContent = recommendation.reason;
+  document.querySelector("#tierTag").textContent = "下单前确认价格";
+  document.querySelector("#resultTitle").textContent = customerTitle(recommendation);
+  document.querySelector("#resultReason").textContent = customerReason(recommendation);
   document.querySelector("#productName").textContent = recommendation.product.name;
   document.querySelector("#productSpec").textContent = recommendation.product.spec;
   document.querySelector("#productImage").src = appPath(recommendation.product.image);
   document.querySelector("#packageName").textContent = recommendation.recommendedPackage.label;
-  document.querySelector("#packageRole").textContent = recommendation.recommendedPackage.role;
-  renderSignals(recommendation.conversionSignals);
+  document.querySelector("#packageRole").textContent = packageRoleText(recommendation.recommendedPackage.type);
   renderUsageInsight(recommendation.usageInsight);
 
   document.querySelector("#packageList").innerHTML = recommendation.packages
@@ -466,26 +584,16 @@ function renderRecommendation(recommendation) {
 
   renderGroupOrder();
 
-  document.querySelector("#objectionList").innerHTML = recommendation.objectionCards
+  document.querySelector("#objectionList").innerHTML = customerFaqs(recommendation)
     .map(objectionCard)
     .join("");
 
-  currentShareText = recommendation.followUpKit.shareText;
-  document.querySelector("#followTitle").textContent = recommendation.followUpKit.title;
-  document.querySelector("#followShareText").textContent = recommendation.followUpKit.shareText;
-  document.querySelector("#followInternalNote").textContent = recommendation.followUpKit.internalNote;
-  document.querySelector("#followCallScript").textContent = recommendation.followUpKit.callScript;
-
-  document.querySelector("#educationList").innerHTML = recommendation.educationCards
+  document.querySelector("#educationList").innerHTML = customerProofCards(recommendation)
     .map(educationCard)
     .join("");
 
   document.querySelector("#alternativeList").innerHTML = recommendation.alternatives
     .map(alternativeCard)
-    .join("");
-
-  document.querySelector("#enablementList").innerHTML = recommendation.aiEnablements
-    .map(enablementCard)
     .join("");
 
   bindPackageButtons();
@@ -508,7 +616,7 @@ async function requestRecommendation(productId) {
 
   const button = form.querySelector("button[type='submit']");
   button.disabled = true;
-  button.querySelector("span").textContent = "AI 正在生成建议";
+  button.querySelector("span").textContent = "正在生成建议";
 
   try {
     const data = await postJson("/api/recommendation", payload);
@@ -544,5 +652,3 @@ form.addEventListener("submit", (event) => {
   event.preventDefault();
   requestRecommendation();
 });
-
-copyShareButton.addEventListener("click", copyShareText);

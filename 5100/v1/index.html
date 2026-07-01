@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>5100 AI 选水顾问 v1</title>
+    <title>5100 选水顾问</title>
     <meta
       name="description"
-      content="5100 AI 选水顾问，为终端买水用户生成体验装、半吨卡、一吨卡和亲友凑卡购买建议。"
+      content="5100选水顾问，按饮水场景推荐体验装、半吨卡、一吨卡和亲友凑卡方案。"
     />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=20260702-customer2" />
   </head>
   <body>
     <main class="app-shell">
@@ -16,14 +16,14 @@
         <img class="hero__image" src="./assets/manual/hero.jpg" alt="" />
         <div class="hero__scrim"></div>
         <header class="topbar">
-          <span class="brand-mark">5100 AI</span>
-          <span class="beta-pill">正式版 v1</span>
+          <span class="brand-mark">5100 西藏冰川矿泉水</span>
+          <span class="beta-pill">专属购水入口</span>
         </header>
         <div class="hero__content">
-          <p class="eyebrow">扫码价由分享二维码决定 · 当前 VIP B</p>
-          <h1 id="hero-title">AI 选水顾问</h1>
+          <p class="eyebrow">六箱体验装 · 半吨卡 · 一吨卡</p>
+          <h1 id="hero-title">30秒选好适合你的5100</h1>
           <p class="hero-copy">
-            先测场景，再给方案。30秒判断您适合体验装、半吨卡、一吨卡，还是邀请亲友一起凑卡。
+            选用途和人数，快速看到建议型号、预计用量和购买方式。下单前可在小程序确认价格与配送。
           </p>
         </div>
       </section>
@@ -31,10 +31,10 @@
       <section class="panel" aria-labelledby="wizard-title">
         <div class="panel-head">
           <div>
-            <p class="eyebrow eyebrow--dark">终端用户入口</p>
+            <p class="eyebrow eyebrow--dark">购水入口</p>
             <h2 id="wizard-title">您这次主要想解决什么场景？</h2>
           </div>
-          <span class="tier-tag" id="tierTag">VIP B 扫码价</span>
+          <span class="tier-tag" id="tierTag">下单前确认价格</span>
         </div>
 
         <div class="proof-rail" aria-label="5100核心卖点">
@@ -161,12 +161,13 @@
               <path d="M13 5 20 12l-7 7-1.4-1.4 4.6-4.6H4v-2h12.2l-4.6-4.6L13 5Z"/>
             </svg>
           </button>
+          <p class="auth-note">进入小程序确认下单时，可使用微信手机号授权，少填一步。</p>
         </form>
       </section>
 
       <section id="result" class="result is-hidden" aria-live="polite">
         <div class="result-head">
-          <p class="eyebrow eyebrow--dark">AI 购买建议</p>
+          <p class="eyebrow eyebrow--dark">购买建议</p>
           <h2 id="resultTitle">推荐方案</h2>
           <p id="resultReason"></p>
         </div>
@@ -185,69 +186,41 @@
           </div>
         </article>
 
-        <div id="signalPanel" class="metric-band"></div>
-
         <div class="section-line">
-          <h3>AI 用量测算</h3>
-          <p>把规格换成用户能理解的天数和月成本。</p>
+          <h3>预计用量</h3>
+          <p>帮你先把大概用量算清楚。</p>
         </div>
         <article id="usageInsight" class="usage-card"></article>
 
         <div class="section-line">
-          <h3>三档购买入口</h3>
-          <p>下单前以小程序确认页为准。</p>
+          <h3>选择购买方式</h3>
+          <p>可先体验，也可直接买水卡。</p>
         </div>
         <div id="packageList" class="package-list"></div>
 
         <div class="section-line">
           <h3>亲友拼单凑卡</h3>
-          <p>不改变水卡规格，多人共同凑成标准卡。</p>
+          <p>一起买，仍按标准水卡兑换。</p>
         </div>
         <article id="groupOrderPanel" class="group-order-card"></article>
 
         <div class="section-line">
-          <h3>AI 预答顾虑</h3>
-          <p>在客户犹豫前先把话说透。</p>
+          <h3>购买前常见问题</h3>
+          <p>下单前先看清楚。</p>
         </div>
         <div id="objectionList" class="objection-list"></div>
 
         <div class="section-line">
-          <h3>分销商跟进</h3>
-          <p>生成可直接发微信的话术。</p>
-        </div>
-        <article class="follow-card">
-          <div class="follow-card__head">
-            <strong id="followTitle">跟进话术</strong>
-            <button id="copyShareButton" class="small-action" type="button">复制</button>
-          </div>
-          <p id="followShareText"></p>
-          <div class="follow-note">
-            <span>内部提示</span>
-            <p id="followInternalNote"></p>
-          </div>
-          <div class="follow-note">
-            <span>电话开场</span>
-            <p id="followCallScript"></p>
-          </div>
-        </article>
-
-        <div class="section-line">
-          <h3>说明书精华</h3>
-          <p>按场景自动露出，不再藏在按钮里。</p>
+          <h3>为什么适合你</h3>
+          <p>把产品说明书里重要的部分挑出来。</p>
         </div>
         <div id="educationList" class="education-list"></div>
 
         <div class="section-line">
-          <h3>也可以换型号</h3>
-          <p>同一个价格等级下切换。</p>
+          <h3>换一款看看</h3>
+          <p>不同规格适合不同饮水习惯。</p>
         </div>
         <div id="alternativeList" class="alternative-list"></div>
-
-        <div class="section-line">
-          <h3>AI 还能赋能</h3>
-          <p>从入口转化扩展到真实经营系统。</p>
-        </div>
-        <div id="enablementList" class="enablement-list"></div>
       </section>
     </main>
 
@@ -257,17 +230,18 @@
       <form method="dialog">
         <div class="dialog-head">
           <div>
-            <p class="eyebrow eyebrow--dark">下单预览</p>
-            <h2>小程序接口参数</h2>
+            <p class="eyebrow eyebrow--dark">下单确认</p>
+            <h2>请确认你的选择</h2>
           </div>
           <button class="icon-button" value="close" aria-label="关闭">×</button>
         </div>
         <p id="dialogMessage" class="dialog-copy"></p>
-        <pre id="orderParams" class="params-box"></pre>
-        <button class="primary-action" value="close" type="submit">我知道了</button>
+        <div id="orderSummary" class="order-summary"></div>
+        <p class="dialog-tip">进入小程序确认下单时，可使用微信手机号授权。</p>
+        <button class="primary-action" value="close" type="submit">好的</button>
       </form>
     </dialog>
 
-    <script src="./app.js" type="module"></script>
+    <script src="./app.js?v=20260702-customer2" type="module"></script>
   </body>
 </html>
