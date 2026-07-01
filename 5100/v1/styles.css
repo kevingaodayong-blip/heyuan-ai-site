@@ -1039,15 +1039,22 @@ legend {
   background: linear-gradient(180deg, #ffffff, #f7fbf8);
 }
 
-.education-item img {
+.education-item__image {
   width: calc(100% + 28px);
-  height: auto;
+  height: 188px;
   display: block;
   margin: -14px -14px 12px;
   border-radius: 8px 8px 0 0;
-  object-fit: contain;
   object-position: center;
   background: #e8f3f7;
+}
+
+.education-item__image--contain {
+  object-fit: contain;
+}
+
+.education-item__image--cover {
+  object-fit: cover;
 }
 
 .delivery-item {

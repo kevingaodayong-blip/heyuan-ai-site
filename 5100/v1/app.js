@@ -143,9 +143,14 @@ function packageCard(item, isRecommended) {
 }
 
 function educationCard(item) {
+  const imageFit = item.imageFit === "cover" ? "cover" : "contain";
   return `
     <article class="education-item">
-      ${item.image ? `<img src="${appPath(item.image)}" alt="" loading="lazy" />` : ""}
+      ${
+        item.image
+          ? `<img class="education-item__image education-item__image--${imageFit}" src="${appPath(item.image)}" alt="" loading="eager" />`
+          : ""
+      }
       <strong>${item.title}</strong>
       <p>${item.body}</p>
     </article>
@@ -249,21 +254,21 @@ function buildGroupPlan(recommendation, targetPackageType) {
   const unitCardPrice = targetPackage.unitCardPrice || targetPackage.price / totalCards;
   const sceneName = groupScenarioName(recommendation.scenario);
   const groupId = `grp_${recommendation.id.slice(0, 8)}_${normalizedTarget}`;
-  const inviteText = `我正在发起5100${recommendation.product.name}${groupTargetName(normalizedTarget)}拼卡，目标是${totalCards}张实体水卡（每张${cardBoxCount}箱起送），现在已认领${claimedCards}张，还差${remainingCards}张。建议2-${MAX_GROUP_RECEIVERS}人参与，水卡默认统一寄给发起人，凑满后仍按标准水卡兑换。`;
+  const inviteText = `我正在发起5100${recommendation.product.name}${groupTargetName(normalizedTarget)}拼卡，目标是${totalCards}张实体水卡（每张${cardBoxCount}箱起送），现在已认领${claimedCards}张，还差${remainingCards}张。建议2-${MAX_GROUP_RECEIVERS}人参与，凑满后由发起人统一确认收卡信息。`;
 
   return {
     groupId,
     targetPackageType: normalizedTarget,
     targetLabel: groupTargetName(normalizedTarget),
     title: `邀请${sceneName}一起拼${recommendation.product.name}${groupTargetName(normalizedTarget)}`,
-    subtitle: `按实体水卡张数认领，建议2-${MAX_GROUP_RECEIVERS}人参与，默认统一寄给发起人。`,
+    subtitle: `按实体水卡张数认领，建议2-${MAX_GROUP_RECEIVERS}人参与，凑满后统一确认收卡信息。`,
     targetPackage,
     totalCards,
     claimedCards,
     remainingCards,
     cardBoxCount,
     maxReceivers: MAX_GROUP_RECEIVERS,
-    shippingMode: "水卡默认统一寄给发起人",
+    shippingMode: "发起人统一确认收卡信息",
     progress,
     unitCardPrice,
     members,
@@ -315,7 +320,7 @@ function groupOrderCard(plan) {
       <div class="group-progress__track">
         <span class="group-progress__bar" style="width: ${plan.progress}%"></span>
       </div>
-      <p>${plan.targetPackage.label}共${plan.totalCards}张实体水卡，每张${plan.cardBoxCount}箱；整卡价 ${formatMoney(plan.targetPackage.price)}，约 ${formatMoney(plan.unitCardPrice)}/张。${plan.shippingMode}，避免多人分寄增加运费。</p>
+      <p>${plan.targetPackage.label}共${plan.totalCards}张实体水卡，每张${plan.cardBoxCount}箱；整卡价 ${formatMoney(plan.targetPackage.price)}，约 ${formatMoney(plan.unitCardPrice)}/张。${plan.shippingMode}。</p>
     </div>
 
     <div class="group-members">
@@ -365,6 +370,98 @@ function renderUsageInsight(usage) {
   `;
 }
 
+function referencePriceItem({ label, name, price, volumeMl, bottleCount, note }) {
+  const liters = (volumeMl * bottleCount) / 1000;
+  return {
+    label,
+    name,
+    boxPrice: `约${formatMoney(price)}`,
+    bottlePrice: `约${formatUnitMoney(price / bottleCount, 1)}`,
+    literPrice: `约${formatUnitMoney(price / liters, 1)}/L`,
+    note,
+  };
+}
+
+function competitorReferences(productId) {
+  const sharedNote = "京东/天猫同规格或近规格公开价参考，平台活动价会实时变化，下单以店铺页面为准。";
+  const references = {
+    business: [
+      referencePriceItem({
+        label: "依云参考",
+        name: "Evian 依云 330ml x 24瓶",
+        price: 148,
+        volumeMl: 330,
+        bottleCount: 24,
+        note: sharedNote,
+      }),
+      referencePriceItem({
+        label: "斐济参考",
+        name: "FIJI 斐泉 330ml x 24瓶",
+        price: 168,
+        volumeMl: 330,
+        bottleCount: 24,
+        note: sharedNote,
+      }),
+    ],
+    classic: [
+      referencePriceItem({
+        label: "依云参考",
+        name: "Evian 依云 500ml x 24瓶",
+        price: 175,
+        volumeMl: 500,
+        bottleCount: 24,
+        note: sharedNote,
+      }),
+      referencePriceItem({
+        label: "斐济参考",
+        name: "FIJI 斐泉 500ml x 24瓶",
+        price: 224,
+        volumeMl: 500,
+        bottleCount: 24,
+        note: sharedNote,
+      }),
+    ],
+    family: [
+      referencePriceItem({
+        label: "依云参考",
+        name: "Evian 依云 1.5L x 12瓶",
+        price: 199,
+        volumeMl: 1500,
+        bottleCount: 12,
+        note: sharedNote,
+      }),
+      referencePriceItem({
+        label: "斐济参考",
+        name: "FIJI 斐泉 1.5L x 12瓶",
+        price: 289,
+        volumeMl: 1500,
+        bottleCount: 12,
+        note: sharedNote,
+      }),
+    ],
+    tea: [
+      referencePriceItem({
+        label: "依云大瓶参考",
+        name: "Evian 依云 1.5L x 12瓶",
+        price: 199,
+        volumeMl: 1500,
+        bottleCount: 12,
+        note: "4L高端进口水同款较少，按高端进口大瓶近规格参考，下单以店铺页面为准。",
+      }),
+      referencePriceItem({
+        label: "斐济大瓶参考",
+        name: "FIJI 斐泉 1.5L x 12瓶",
+        price: 289,
+        volumeMl: 1500,
+        bottleCount: 12,
+        note: "4L高端进口水同款较少，按高端进口大瓶近规格参考，下单以店铺页面为准。",
+      }),
+    ],
+  };
+
+  return references[productId] || references.classic;
+}
+
 function comparisonCard(item) {
   return `
     <article class="comparison-card ${item.highlight ? "is-highlight" : ""}">
@@ -405,26 +502,11 @@ function renderPriceComparison(recommendation) {
       name: `${recommendation.product.name} · ${recommendation.product.spec}`,
       boxPrice: formatUnitMoney(unitBoxPrice, 1),
       bottlePrice: formatUnitMoney(unitBottlePrice, 2),
-      literPrice: formatUnitMoney(unitLiterPrice, 1),
-      note: "高端冰川矿泉水定位，看每升成本更直观，适合长期家庭和办公饮用。",
+      literPrice: `${formatUnitMoney(unitLiterPrice, 1)}/L`,
+      note: `${selected.label}折算价，按当前推荐规格与套餐计算；长期饮用建议重点看每升成本和兑换方式。`,
       highlight: true,
     },
-    {
-      label: "天猫/京东旗舰店参考",
-      name: "依云 Evian 500ml x 24瓶",
-      boxPrice: "约¥186",
-      bottlePrice: "约¥7.8",
-      literPrice: "约¥15.5/L",
-      note: "参考依云天猫官方旗舰店500ml*24整箱活动价，京东/天猫实时价格以店铺页面为准。",
-    },
-    {
-      label: "京东/天猫旗舰店参考",
-      name: "FIJI 斐济 500ml x 24瓶",
-      boxPrice: "约¥224",
-      bottlePrice: "约¥9.3",
-      literPrice: "约¥18.7/L",
-      note: "参考FIJI京东自营旗舰店500ml*24近期页面价，京东/天猫实时价格以店铺页面为准。",
-    },
+    ...competitorReferences(recommendation.product.id),
   ];
 
   document.querySelector("#priceComparison").innerHTML = items.map(comparisonCard).join("");
@@ -442,26 +524,87 @@ function qualityCard(item) {
 
 function renderQualityList(recommendation) {
   const boxPrice = recommendation.recommendedPackage.unitBoxPrice || recommendation.recommendedPackage.price / recommendation.recommendedPackage.boxCount;
+  const product = recommendation.product;
+  const productQuality = {
+    business: {
+      title: "330ml主打高端商务",
+      body: "330ml适合高端商务、会议接待场景，小瓶更适合会议桌、客户来访和活动分发。",
+    },
+    classic: {
+      title: "500ml适合日常及户外",
+      body: "500ml是通用度最高的规格，适合办公室、户外饮用、会议和轻礼赠，单瓶容量好理解。",
+    },
+    family: {
+      title: "1.5L更适合居家饮用",
+      body: "1.5L适合餐桌、厨房和父母家常备，长期消耗更稳定，按箱兑换后更适合家庭复购。",
+    },
+    tea: {
+      title: "4L切入泡茶煲汤",
+      body: "4L定位泡茶、煲汤用水，适合茶台、茶室和高端会务，减少频繁开瓶，方便持续招待。",
+    },
+  };
+  const sourceCard =
+    product.id === "tea"
+      ? {
+          label: "水源",
+          title: "雅拉香布雪山藏冰川天然水",
+          body: "4L系列来自藏民族摇篮雅砻河谷源头，以适中矿化度切入泡茶、煲汤用水场景。",
+        }
+      : {
+          label: "水源",
+          title: "曲玛弄唯一水源地",
+          body: "曲玛弄意为“水之谷”，水源位于念青唐古拉山脉南麓海拔约5100米处，来自冰川融水及大气降水经岩层过滤。",
+        };
+  const mineralCard =
+    product.id === "tea"
+      ? {
+          label: "口感",
+          title: "适中矿化度",
+          body: "泡茶和煲汤更看重水感稳定、口感干净和不抢茶味，适合先用体验装在真实茶席验证。",
+        }
+      : {
+          label: "矿物",
+          title: "锂、锶、偏硅酸三矿水",
+          body: "5100曲玛弄具备锂、锶、偏硅酸三项矿物质特征，三项均达到天然矿泉水界限指标。",
+        };
+  const processCard =
+    product.id === "tea"
+      ? {
+          label: "阵营",
+          title: "藏冰川天然水系列",
+          body: "4L系列面向泡茶、煲汤用水场景，和旗舰曲玛弄系列共同承接不同饮用需求。",
+        }
+      : {
+          label: "工艺",
+          title: "UF超滤保留天然矿物质",
+          body: "5100采用UF超滤膜分离技术，在保障净化的同时保留天然矿物质成分。",
+        };
+  const standardCard =
+    product.id === "tea"
+      ? {
+          label: "场景",
+          title: "泡茶、煲汤、高端招待",
+          body: "这类场景更在意水感稳定和使用便利，4L大瓶减少频繁开瓶，适合茶室、茶台和餐饮接待。",
+        }
+      : {
+          label: "标准",
+          title: "GB8537饮用天然矿泉水",
+          body: "可以通过瓶身产品标准号识别品类：GB8537对应饮用天然矿泉水，GB17323对应饮用纯净水。",
+        };
   const items = [
+    sourceCard,
+    mineralCard,
+    processCard,
+    standardCard,
     {
-      label: "水源",
-      title: "5100米冰川矿泉水",
-      body: "来自西藏高海拔冰川水源，适合高端饮用、接待和礼赠表达。",
-    },
-    {
-      label: "指标",
-      title: "锂、锶、偏硅酸",
-      body: "同时具备多个容易被用户记住的天然矿物质指标，更容易讲清品质。",
-    },
-    {
-      label: "口感",
-      title: "低钠、弱碱、清冽",
-      body: "定位高端日常饮水，不只讲进口标签，更看水源和长期饮用体验。",
+      label: "规格",
+      title: productQuality[product.id]?.title || "按场景选规格",
+      body: productQuality[product.id]?.body || product.shortUse,
     },
     {
       label: "价格",
       title: `水卡单箱约${formatUnitMoney(boxPrice, 1)}`,
-      body: "和进口高端水同台比较，5100更适合家庭、办公室长期复购。",
+      body: "高端水不只看进口标签，也要看水源、标准、规格和长期复购成本。水卡能把每箱、每升成本算得更清楚。",
     },
   ];
 
@@ -488,19 +631,43 @@ function customerReason(recommendation) {
   const product = recommendation.product;
   const packageLabel = recommendation.recommendedPackage.label;
   const sceneCopy = {
-    family_drink: `${product.spec}更适合餐桌、厨房和日常补水；如果还没喝过，可以先从${packageLabel}开始。`,
-    parents: `${product.spec}适合家里长期备水，后续可按需兑换配送，减少搬运和囤货压力。`,
-    office: `${product.spec}适合会议、茶水间和来访接待，人数多时可直接看水卡。`,
-    tea: `${product.spec}适合茶台、茶室和招待场景，建议先试泡茶口感。`,
-    gift: `${product.spec}便于分发和携带，适合客户、领导和节礼场景。`,
-    conference: `${product.spec}适合会务、福利和批量分发，建议优先看水卡总价。`,
+    family_drink: `${product.spec}适合居家长期饮用，覆盖餐桌、厨房和日常补水，先用${packageLabel}验证口感更稳妥。`,
+    parents: `${product.spec}适合给父母家常备，后续用水卡按需兑换配送，重点是少搬水、长期喝得安心。`,
+    office: `${product.spec}对应日常及户外饮用场景，放在办公室也适合茶水间、会议和客户来访。`,
+    tea: `${product.spec}适合泡茶、煲汤用水场景，重点看水感稳定、出汤干净和开瓶便利。`,
+    gift: `${product.spec}适合高端商务、会议接待场景，也适合客户、领导和节礼，体面又有实际使用价值。`,
+    conference: `${product.spec}适合高端商务、会议接待和批量分发，建议先看水卡总价、单箱价和兑换节奏。`,
   };
-  return sceneCopy[recommendation.scenario] || `${product.spec}适合你的当前场景，可先选择${packageLabel}。`;
+  const priorityCopy = {
+    value: "你在意性价比，所以这里会优先把单瓶、单箱、每升和水卡张数算清楚。",
+    taste: "你在意口感，所以建议先用体验装真实试喝，再决定是否升级半吨卡或一吨卡。",
+    delivery: "你在意配送，所以重点看水卡按需兑换，减少一次性囤货和搬运压力。",
+    prestige: "你在意体面，所以重点看水源地、获奖背书、实物水卡和接待礼赠表达。",
+  };
+  return `${sceneCopy[recommendation.scenario] || `${product.spec}适合你的当前场景，可先选择${packageLabel}。`} ${priorityCopy[recommendation.priority.id] || ""}`;
 }
 
 function customerFaqs(recommendation) {
   const product = recommendation.product;
+  const standardFaq =
+    product.id === "tea"
+      ? {
+          title: "泡茶款和普通瓶装水有什么不同？",
+          answer: "泡茶款重点看水感稳定、口感干净和不抢茶味，4L规格更适合茶台、煲汤和持续招待场景。",
+        }
+      : {
+          title: "怎么看是不是天然矿泉水？",
+          answer: "看瓶身标签的产品标准号。GB 8537对应饮用天然矿泉水，可用标准号快速识别水的品类。",
+        };
   return [
+    standardFaq,
+    {
+      title: "5100为什么定位高端？",
+      answer:
+        product.id === "tea"
+          ? "4L系列面向泡茶、煲汤用水高端市场，重点是水源、矿化度、口感稳定和场景适配。"
+          : "曲玛弄坚持唯一水源地、原地灌装，并采用UF超滤膜分离工艺保留天然矿物质，这些共同构成高端定位。",
+    },
     {
       title: "先买体验装还是水卡？",
       answer: `第一次喝${product.name}，建议先选六箱体验装；已经确定长期喝或多人共用，可以直接看半吨卡/一吨卡。`,
@@ -515,37 +682,111 @@ function customerFaqs(recommendation) {
     },
     {
       title: "可以和亲友一起买吗？",
-      answer: `可以发起拼卡计划，建议2-${MAX_GROUP_RECEIVERS}人按实体水卡张数认领；水卡默认统一寄给发起人，减少多人分寄带来的运费成本。`,
+      answer: `可以发起拼卡计划，建议2-${MAX_GROUP_RECEIVERS}人按实体水卡张数认领；凑满后统一确认收卡信息，再进入小程序完成下单。`,
     },
   ];
 }
 
 function customerProofCards(recommendation) {
   const product = recommendation.product;
+  const selected = recommendation.recommendedPackage;
   const sceneReason = {
-    family_drink: "适合餐桌、厨房和日常补水，箱数消耗稳定。",
-    parents: "适合给父母长期备水，可减少搬运，按需配送到家。",
-    office: "适合会议室、茶水间和客户来访，规格更方便分发。",
-    tea: "适合茶台和招待场景，先用小批量验证泡茶口感。",
-    gift: "适合客户、领导和节礼，便携、体面，也更容易分送。",
-    conference: "适合活动、福利和会务批量用水，先算总量更清楚。",
+    family_drink: {
+      title: "家庭日饮这样选",
+      body: "家庭长期喝水最怕买错规格和一次买太多。1.5L适合居家饮用，覆盖餐桌、厨房和日常补水，先用六箱建立口感和配送体验。",
+      image: "/assets/manual/proof/family-scene.jpg",
+      imageFit: "cover",
+    },
+    parents: {
+      title: "给长辈更看重省心",
+      body: "给父母家备水，重点不是一次堆很多箱，而是后续能按需兑换到家。家庭款1.5L更适合做长期常备水。",
+      image: "/assets/manual/proof/family-scene.jpg",
+      imageFit: "cover",
+    },
+    office: {
+      title: "办公室更看重通用",
+      body: "办公室既有员工日饮，也有会议和客户来访。500ml适合日常及户外饮用，通用度高，摆放、分发和控制消耗都更方便。",
+      image: "/assets/manual/classic-full.jpg",
+      imageFit: "contain",
+    },
+    tea: {
+      title: "泡茶更看重水感稳定",
+      body: "茶室和茶台用水，重点是口感、出汤和连续冲泡。4L适合泡茶、煲汤用水，适合茶席和高端招待。",
+      image: "/assets/manual/tea.jpg",
+      imageFit: "contain",
+    },
+    gift: {
+      title: "商务礼赠要体面也要实用",
+      body: "330ml主打高端商务、会议接待场景，适合会议桌、客户拜访和活动伴手礼，规格精致，分发容易。",
+      image: "/assets/manual/business-full.jpg",
+      imageFit: "contain",
+    },
+    conference: {
+      title: "会务福利要先算总量",
+      body: "企业批量用水要看人数、周期和每箱成本。商务款330ml适合会议与活动，水卡适合把长期消耗安排清楚。",
+      image: "/assets/manual/business-full.jpg",
+      imageFit: "contain",
+    },
+  };
+  const priorityReason = {
+    value: {
+      title: "性价比看单箱和每升",
+      body: `${selected.label}折算单箱约${formatUnitMoney(selected.unitBoxPrice, 1)}、每升约${formatUnitMoney(selected.price / selected.totalLiters, 1)}，比只看整卡总价更容易判断是否划算。`,
+      image: product.image,
+      imageFit: "contain",
+    },
+    taste: {
+      title: "口感先用真实场景试",
+      body: "水好不好喝，最好在家里、办公室或茶台真实试。先从体验装开始，喝过之后再决定是否升级长期水卡。",
+      image: product.id === "tea" ? "/assets/manual/tea.jpg" : "/assets/manual/hero.jpg",
+      imageFit: product.id === "tea" ? "contain" : "cover",
+    },
+    delivery: {
+      title: "水卡适合按需兑换",
+      body: "体验装先试喝，水卡后续按需兑换，不需要一次性把半吨或一吨全部堆在家里。",
+      image: "/assets/manual/proof/exchange-compact.jpg",
+      imageFit: "contain",
+    },
+    prestige: {
+      title: "体面来自水源和背书",
+      body:
+        product.id === "tea"
+          ? "4L泡茶款强调水感、规格和高端茶席场景，比普通桶装水更适合茶室、会务和客户招待。"
+          : "曲玛弄唯一水源地、三矿水、地理标志和实体水卡，比普通箱装水更适合接待、礼赠和客户维护。",
+      image: product.id === "tea" ? "/assets/manual/tea.jpg" : "/assets/manual/proof/awards.jpg",
+      imageFit: "contain",
+    },
+  };
+  const manualProof =
+    product.id === "tea"
+      ? {
+          title: "源头与品控更安心",
+          body: "好水适合长期喝，也适合用在茶台和餐饮场景。选泡茶款时，可以同时关注水源、口感和稳定供应。",
+          image: "/assets/manual/proof/factory-uf.jpg",
+          imageFit: "cover",
+        }
+      : {
+          title: "曲玛弄的品质证据",
+          body: "曲玛弄拥有地理标志产品保护、国家天然矿泉水5A级水源等背书，并具备锂、锶、偏硅酸三项矿物质特征。",
+          image: "/assets/manual/proof/mineral-table.jpg",
+          imageFit: "contain",
+        };
+  const sceneCard = sceneReason[recommendation.scenario] || {
+    title: `${product.name}适合这个场景`,
+    body: product.shortUse,
+    image: product.image,
+    imageFit: "contain",
   };
 
   return [
+    sceneCard,
+    priorityReason[recommendation.priority.id] || priorityReason.value,
+    manualProof,
     {
-      title: `${product.name}适合这个场景`,
-      body: sceneReason[recommendation.scenario] || product.shortUse,
-      image: product.image,
-    },
-    {
-      title: "5100米冰川水源",
-      body: "来自西藏冰川水源，适合日常饮用、接待和礼赠场景。",
-      image: "/assets/manual/hero.jpg",
-    },
-    {
-      title: "可按需兑换配送",
-      body: "体验装先试，水卡后续兑换，适合家庭、办公室和亲友共同使用。",
-      image: "/assets/manual/exchange-benefits.jpg",
+      title: "从体验到水卡更自然",
+      body: `${product.name}可以先用体验装降低第一次决策压力，确认合适后再升级半吨卡或一吨卡。`,
+      image: "/assets/manual/proof/exchange-compact.jpg",
+      imageFit: "contain",
     },
   ];
 }
@@ -779,6 +1020,48 @@ async function requestRecommendation(productId) {
   }
 }
 
+function applyPreviewParams() {
+  const params = getParams();
+  const scenario = params.get("scenario");
+  const priority = params.get("priority");
+  const people = params.get("people");
+  const enterprise = params.get("enterprise");
+
+  if (scenario) {
+    const input = [...form.querySelectorAll('input[name="scenario"]')].find((item) => item.value === scenario);
+    if (input) {
+      input.checked = true;
+      document
+        .querySelectorAll('input[name="scenario"]')
+        .forEach((item) => item.closest(".choice")?.classList.toggle("is-selected", item === input));
+    }
+  }
+
+  if (priority) {
+    const input = [...form.querySelectorAll('input[name="priority"]')].find((item) => item.value === priority);
+    if (input) {
+      input.checked = true;
+      document
+        .querySelectorAll('input[name="priority"]')
+        .forEach((item) => item.closest(".choice")?.classList.toggle("is-selected", item === input));
+    }
+  }
+
+  if (people) {
+    const next = Math.min(30, Math.max(1, Number(people) || 3));
+    peopleInput.value = String(next);
+  }
+
+  if (enterprise === "1") {
+    const checkbox = form.querySelector('input[name="hasEnterpriseResource"]');
+    if (checkbox) checkbox.checked = true;
+  }
+
+  if (params.get("preview") === "1") {
+    requestRecommendation(params.get("productId") || undefined);
+  }
+}
+
 choices.forEach((choice) => {
   choice.addEventListener("click", () => {
     const input = choice.querySelector("input[type='radio']");
@@ -802,3 +1085,5 @@ form.addEventListener("submit", (event) => {
   event.preventDefault();
   requestRecommendation();
 });
+
+applyPreviewParams();
