@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>5100 AI 水管家 Pro</title>
+    <meta
+      name="description"
+      content="5100 AI 水管家 Pro，按场景、人数和关注点即时生成购水方案。"
+    />
+    <link rel="stylesheet" href="./styles.css?v=20260702-ai-pro" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero" aria-labelledby="hero-title">
+        <header class="topbar">
+          <span>5100 西藏冰川矿泉水</span>
+          <em>AI 水管家 Pro</em>
+        </header>
+        <img class="hero__image" src="../v1/assets/manual/hero.jpg" alt="" />
+        <div class="hero__copy">
+          <p>3秒生成专属购水方案</p>
+          <h1 id="hero-title">不用挑，AI直接帮你选对水</h1>
+          <span>场景匹配 · 用量测算 · 价格对比 · 水卡拼单</span>
+        </div>
+      </section>
+
+      <section class="ai-panel" aria-labelledby="advisor-title">
+        <div class="ai-panel__head">
+          <div>
+            <p class="eyebrow">5100 专属水管家</p>
+            <h2 id="advisor-title">你这次主要为什么买水？</h2>
+          </div>
+          <span id="aiStatus">AI待命</span>
+        </div>
+
+        <form id="smartForm" class="smart-form">
+          <fieldset>
+            <legend>选择场景</legend>
+            <div class="chip-grid" id="scenarioGrid">
+              <label class="smart-chip is-active">
+                <input type="radio" name="scenario" value="family_drink" checked />
+                <strong>家里长期喝</strong>
+                <small>餐桌、厨房、日常补水</small>
+              </label>
+              <label class="smart-chip">
+                <input type="radio" name="scenario" value="parents" />
+                <strong>给父母长辈</strong>
+                <small>少搬水，按需配送</small>
+              </label>
+              <label class="smart-chip">
+                <input type="radio" name="scenario" value="office" />
+                <strong>办公室接待</strong>
+                <small>茶水间、会议、来访</small>
+              </label>
+              <label class="smart-chip">
+                <input type="radio" name="scenario" value="tea" />
+                <strong>泡茶/茶室</strong>
+                <small>茶台、煲汤、高端招待</small>
+              </label>
+              <label class="smart-chip">
+                <input type="radio" name="scenario" value="gift" />
+                <strong>商务送礼</strong>
+                <small>客户、领导、节礼</small>
+              </label>
+              <label class="smart-chip">
+                <input type="radio" name="scenario" value="conference" />
+                <strong>企业福利/会务</strong>
+                <small>批量消耗，算总账</small>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="control-row">
+            <label for="people">覆盖人数</label>
+            <div class="counter">
+              <button type="button" data-count="-1" aria-label="减少人数">−</button>
+              <input id="people" name="people" type="number" min="1" max="30" value="3" />
+              <button type="button" data-count="1" aria-label="增加人数">+</button>
+            </div>
+          </div>
+
+          <fieldset>
+            <legend>你最在意</legend>
+            <div class="priority-row" id="priorityGrid">
+              <label class="priority-pill is-active">
+                <input type="radio" name="priority" value="value" checked />
+                性价比
+              </label>
+              <label class="priority-pill">
+                <input type="radio" name="priority" value="taste" />
+                口感
+              </label>
+              <label class="priority-pill">
+                <input type="radio" name="priority" value="delivery" />
+                配送
+              </label>
+              <label class="priority-pill">
+                <input type="radio" name="priority" value="prestige" />
+                体面
+              </label>
+            </div>
+          </fieldset>
+
+          <button class="primary-action" type="submit">
+            立即生成购买方案
+          </button>
+        </form>
+      </section>
+
+      <section id="result" class="result" aria-live="polite">
+        <div class="skeleton">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </section>
+    </main>
+
+    <div id="stickyBar" class="sticky-bar is-hidden">
+      <div>
+        <span id="stickyProduct">AI推荐</span>
+        <strong id="stickyPrice">正在计算</strong>
+      </div>
+      <button id="stickyCta" type="button">确认方案</button>
+    </div>
+
+    <dialog id="orderDialog" class="order-dialog">
+      <form method="dialog">
+        <div class="dialog-head">
+          <h2>确认你的购水方案</h2>
+          <button value="close" aria-label="关闭">×</button>
+        </div>
+        <div id="orderSummary" class="order-summary"></div>
+        <button class="primary-action" value="close" type="submit">我知道了</button>
+      </form>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js?v=20260702-ai-pro" type="module"></script>
+  </body>
+</html>
