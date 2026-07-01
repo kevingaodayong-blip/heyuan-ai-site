@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>5100 选水顾问</title>
+    <meta
+      name="description"
+      content="5100选水顾问，按饮水场景推荐体验装、半吨卡、一吨卡和亲友凑卡方案。"
+    />
+    <link rel="stylesheet" href="./styles.css?v=20260702-customer2" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero" aria-labelledby="hero-title">
+        <img class="hero__image" src="./assets/manual/hero.jpg" alt="" />
+        <div class="hero__scrim"></div>
+        <header class="topbar">
+          <span class="brand-mark">5100 西藏冰川矿泉水</span>
+          <span class="beta-pill">专属购水入口</span>
+        </header>
+        <div class="hero__content">
+          <p class="eyebrow">六箱体验装 · 半吨卡 · 一吨卡</p>
+          <h1 id="hero-title">30秒选好适合你的5100</h1>
+          <p class="hero-copy">
+            选用途和人数，快速看到建议型号、预计用量和购买方式。下单前可在小程序确认价格与配送。
+          </p>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="wizard-title">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow eyebrow--dark">购水入口</p>
+            <h2 id="wizard-title">您这次主要想解决什么场景？</h2>
+          </div>
+          <span class="tier-tag" id="tierTag">下单前确认价格</span>
+        </div>
+
+        <div class="proof-rail" aria-label="5100核心卖点">
+          <span>5100米冰川水源</span>
+          <span>锂锶偏硅酸</span>
+          <span>六箱先体验</span>
+          <span>可邀请亲友凑卡</span>
+        </div>
+
+        <form id="planForm" class="wizard">
+          <fieldset class="scenario-grid">
+            <legend>选择一个最接近的用途</legend>
+            <label class="choice is-selected">
+              <input type="radio" name="scenario" value="family_drink" checked />
+              <span class="choice__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 21V9l8-6 8 6v12h-6v-6h-4v6H4Zm2-2h2v-6h8v6h2v-9l-6-4.5L6 10v9Z"/></svg>
+              </span>
+              <span>
+                <strong>家里长期喝</strong>
+                <small>日常饮用，先体验再升级</small>
+              </span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="scenario" value="parents" />
+              <span class="choice__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 21c-3.3-2.3-7-5.6-7-10a7 7 0 0 1 14 0c0 4.4-3.7 7.7-7 10Zm0-3.1c2.3-1.8 5-4.5 5-6.9a5 5 0 0 0-10 0c0 2.4 2.7 5.1 5 6.9Zm0-3.4 3.2-3.2-1.4-1.4-1.8 1.8-1.8-1.8-1.4 1.4 3.2 3.2Z"/></svg>
+              </span>
+              <span>
+                <strong>给父母长辈</strong>
+                <small>按需送到家，不用搬运</small>
+              </span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="scenario" value="office" />
+              <span class="choice__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 21V7l8-4 8 4v14h-6v-5h-4v5H4Zm3-3h2v-2H7v2Zm0-4h2v-2H7v2Zm0-4h2V8H7v2Zm4 4h2v-2h-2v2Zm0-4h2V8h-2v2Zm4 4h2v-2h-2v2Zm0-4h2V8h-2v2Z"/></svg>
+              </span>
+              <span>
+                <strong>办公室接待</strong>
+                <small>会议、茶水间、客户来访</small>
+              </span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="scenario" value="tea" />
+              <span class="choice__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M5 5h12v6a6 6 0 0 1-12 0V5Zm14 2h1a3 3 0 0 1 0 6h-1v-2h1a1 1 0 0 0 0-2h-1V7ZM5 19h14v2H5v-2Z"/></svg>
+              </span>
+              <span>
+                <strong>泡茶/茶室</strong>
+                <small>泡茶水，茶台先试</small>
+              </span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="scenario" value="gift" />
+              <span class="choice__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M20 7h-2.2A3 3 0 0 0 12 5.2 3 3 0 0 0 6.2 7H4v14h16V7ZM9 5a1 1 0 0 1 1 1v1H8a1 1 0 0 1 1-2Zm6 0a1 1 0 0 1 1 2h-2V6a1 1 0 0 1 1-1ZM6 9h5v10H6V9Zm12 10h-5V9h5v10Z"/></svg>
+              </span>
+              <span>
+                <strong>商务送礼</strong>
+                <small>客户、领导、节礼</small>
+              </span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="scenario" value="conference" />
+              <span class="choice__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M3 5h18v10H3V5Zm2 2v6h14V7H5Zm2 12v-2h10v2H7Z"/></svg>
+              </span>
+              <span>
+                <strong>企业福利/会务</strong>
+                <small>批量消耗，优先算总账</small>
+              </span>
+            </label>
+          </fieldset>
+
+          <div class="form-row">
+            <label for="people">预计覆盖人数</label>
+            <div class="counter">
+              <button type="button" data-counter="-1" aria-label="减少人数">−</button>
+              <input id="people" name="people" type="number" min="1" max="30" value="3" />
+              <button type="button" data-counter="1" aria-label="增加人数">+</button>
+            </div>
+          </div>
+
+          <fieldset class="priority-grid">
+            <legend>现在最在意什么</legend>
+            <label class="choice choice--compact is-selected">
+              <input type="radio" name="priority" value="value" checked />
+              <span>
+                <strong>性价比</strong>
+                <small>先把账算清楚</small>
+              </span>
+            </label>
+            <label class="choice choice--compact">
+              <input type="radio" name="priority" value="taste" />
+              <span>
+                <strong>口感</strong>
+                <small>先试喝再决定</small>
+              </span>
+            </label>
+            <label class="choice choice--compact">
+              <input type="radio" name="priority" value="delivery" />
+              <span>
+                <strong>配送</strong>
+                <small>别囤货别搬水</small>
+              </span>
+            </label>
+            <label class="choice choice--compact">
+              <input type="radio" name="priority" value="prestige" />
+              <span>
+                <strong>体面</strong>
+                <small>接待送礼有表达</small>
+              </span>
+            </label>
+          </fieldset>
+
+          <label class="toggle-line">
+            <input type="checkbox" name="hasEnterpriseResource" />
+            <span>这是办公室、礼赠或企业福利场景</span>
+          </label>
+
+          <button class="primary-action" type="submit">
+            <span>生成购买建议</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M13 5 20 12l-7 7-1.4-1.4 4.6-4.6H4v-2h12.2l-4.6-4.6L13 5Z"/>
+            </svg>
+          </button>
+          <p class="auth-note">进入小程序确认下单时，可使用微信手机号授权，少填一步。</p>
+        </form>
+      </section>
+
+      <section id="result" class="result is-hidden" aria-live="polite">
+        <div class="result-head">
+          <p class="eyebrow eyebrow--dark">购买建议</p>
+          <h2 id="resultTitle">推荐方案</h2>
+          <p id="resultReason"></p>
+        </div>
+
+        <article class="recommend-card">
+          <img id="productImage" class="recommend-card__image" src="./assets/manual/family.jpg" alt="" />
+          <div>
+            <span>推荐型号</span>
+            <strong id="productName">-</strong>
+            <small id="productSpec">-</small>
+          </div>
+          <div>
+            <span>推荐路径</span>
+            <strong id="packageName">-</strong>
+            <small id="packageRole">-</small>
+          </div>
+        </article>
+
+        <div class="section-line">
+          <h3>预计用量</h3>
+          <p>帮你先把大概用量算清楚。</p>
+        </div>
+        <article id="usageInsight" class="usage-card"></article>
+
+        <div class="section-line">
+          <h3>选择购买方式</h3>
+          <p>可先体验，也可直接买水卡。</p>
+        </div>
+        <div id="packageList" class="package-list"></div>
+
+        <div class="section-line">
+          <h3>亲友拼单凑卡</h3>
+          <p>一起买，仍按标准水卡兑换。</p>
+        </div>
+        <article id="groupOrderPanel" class="group-order-card"></article>
+
+        <div class="section-line">
+          <h3>购买前常见问题</h3>
+          <p>下单前先看清楚。</p>
+        </div>
+        <div id="objectionList" class="objection-list"></div>
+
+        <div class="section-line">
+          <h3>为什么适合你</h3>
+          <p>把产品说明书里重要的部分挑出来。</p>
+        </div>
+        <div id="educationList" class="education-list"></div>
+
+        <div class="section-line">
+          <h3>换一款看看</h3>
+          <p>不同规格适合不同饮水习惯。</p>
+        </div>
+        <div id="alternativeList" class="alternative-list"></div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <dialog id="orderDialog" class="order-dialog">
+      <form method="dialog">
+        <div class="dialog-head">
+          <div>
+            <p class="eyebrow eyebrow--dark">下单确认</p>
+            <h2>请确认你的选择</h2>
+          </div>
+          <button class="icon-button" value="close" aria-label="关闭">×</button>
+        </div>
+        <p id="dialogMessage" class="dialog-copy"></p>
+        <div id="orderSummary" class="order-summary"></div>
+        <p class="dialog-tip">进入小程序确认下单时，可使用微信手机号授权。</p>
+        <button class="primary-action" value="close" type="submit">好的</button>
+      </form>
+    </dialog>
+
+    <script src="./app.js?v=20260702-customer2" type="module"></script>
+  </body>
+</html>
