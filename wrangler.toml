@@ -1,0 +1,13 @@
+name = "heyuan-ai-site"
+pages_build_output_dir = "."
+compatibility_date = "2026-07-01"
+
+[vars]
+PAYMENT_METHOD = "personal_wechat_qr"
+PAYMENT_QR_URL = "/5100/assets/payment/wechat-personal-temporary.jpg"
+PAYMENT_RECEIVER_NAME = "DaYong（**勇）"
+VIP_B_CHECKOUT_ENABLED = "true"
+
+[[kv_namespaces]]
+binding = "ORDERS"
+id = "a818283257f74b9daf3c92642cb0df90"

@@ -3,270 +3,277 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>5100 AI 饮水顾问</title>
+    <meta name="theme-color" content="#07528e" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <title>5100 水卡｜六箱·半吨·一吨｜赫远数智</title>
     <meta
       name="description"
-      content="5100 AI 饮水顾问演示版，为终端买水用户生成体验装、半吨卡、一吨卡购买建议。"
+      content="5100西藏冰川矿泉水，六箱卡、半吨卡和一吨卡。按场景选择规格，长期购卡折合每张更划算。"
     />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main class="app-shell">
-      <section class="hero" aria-labelledby="hero-title">
-        <img class="hero__image" src="./assets/manual/hero.jpg" alt="" />
-        <div class="hero__scrim"></div>
-        <header class="topbar">
-          <span class="brand-mark">5100 AI</span>
-          <span class="beta-pill">演示版</span>
-        </header>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="返回首页">
+        <img src="./assets/brand/5100-logo.png" alt="5100 西藏冰川矿泉水" />
+        <span>5100 水卡服务</span>
+      </a>
+      <a class="header-action" href="#catalog">选择规格</a>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero__mountain" aria-hidden="true"></div>
         <div class="hero__content">
-          <p class="eyebrow">扫码价由分享二维码决定 · 当前演示 VIP B</p>
-          <h1 id="hero-title">AI 饮水顾问</h1>
-          <p class="hero-copy">
-            先不注册，先测一测。30秒判断您适合体验装、半吨卡，还是一吨卡。
+          <p class="eyebrow">5100 西藏冰川矿泉水</p>
+          <h1>六箱先体验，<br /><span>长期喝更划算。</span></h1>
+          <p class="hero__copy">
+            四种规格，六箱、半吨、一吨三档购卡量。
+            第一次可以先买一张；确定长期喝，买半吨卡或一吨卡，折合每张水卡更低。
           </p>
+          <div class="hero__actions">
+            <a class="primary-button" href="#catalog">
+              看三档购卡价格
+              <span aria-hidden="true">→</span>
+            </a>
+            <a class="secondary-button" href="#advisor">AI 帮我选</a>
+          </div>
+          <div class="trust-row" aria-label="服务特点">
+            <span>西藏水源</span>
+            <span>六箱起送</span>
+            <span>长期卡分张使用</span>
+          </div>
         </div>
+        <img
+          class="hero__bottle"
+          src="./assets/brand/5100-bottle.png"
+          alt="5100西藏冰川矿泉水500毫升瓶装产品"
+        />
       </section>
 
-      <section class="panel" aria-labelledby="wizard-title">
-        <div class="panel-head">
-          <div>
-            <p class="eyebrow eyebrow--dark">终端用户转化</p>
-            <h2 id="wizard-title">您这次主要想解决什么场景？</h2>
-          </div>
-          <span class="tier-tag" id="tierTag">VIP B 演示价</span>
+      <section class="proof-strip" aria-label="购买要点">
+        <article>
+          <small>先选规格</small>
+          <strong>330ml · 500ml · 1.5L · 4L</strong>
+        </article>
+        <article>
+          <small>再选购卡量</small>
+          <strong>六箱 · 半吨 · 一吨</strong>
+        </article>
+        <article>
+          <small>每张水卡</small>
+          <strong>对应一次六箱配送</strong>
+        </article>
+        <article>
+          <small>长期购买</small>
+          <strong>折合每张水卡更低</strong>
+        </article>
+      </section>
+
+      <section id="advisor" class="advisor section-shell" aria-labelledby="advisor-title">
+        <div>
+          <p class="eyebrow eyebrow--blue">AI 购水建议</p>
+          <h2 id="advisor-title">不知道选哪档？回答两个问题。</h2>
+          <p>AI只推荐规格和购卡量，不替你编造精确饮水天数。</p>
         </div>
-
-        <div class="proof-rail" aria-label="5100核心卖点">
-          <span>5100米冰川水源</span>
-          <span>锂锶偏硅酸</span>
-          <span>六箱先体验</span>
-        </div>
-
-        <form id="planForm" class="wizard">
-          <fieldset class="scenario-grid">
-            <legend>选择一个最接近的用途</legend>
-            <label class="choice is-selected">
-              <input type="radio" name="scenario" value="family_drink" checked />
-              <span class="choice__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><path d="M4 21V9l8-6 8 6v12h-6v-6h-4v6H4Zm2-2h2v-6h8v6h2v-9l-6-4.5L6 10v9Z"/></svg>
-              </span>
-              <span>
-                <strong>家里长期喝</strong>
-                <small>日常饮用，先体验再升级</small>
-              </span>
-            </label>
-            <label class="choice">
-              <input type="radio" name="scenario" value="parents" />
-              <span class="choice__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><path d="M12 21c-3.3-2.3-7-5.6-7-10a7 7 0 0 1 14 0c0 4.4-3.7 7.7-7 10Zm0-3.1c2.3-1.8 5-4.5 5-6.9a5 5 0 0 0-10 0c0 2.4 2.7 5.1 5 6.9Zm0-3.4 3.2-3.2-1.4-1.4-1.8 1.8-1.8-1.8-1.4 1.4 3.2 3.2Z"/></svg>
-              </span>
-              <span>
-                <strong>给父母长辈</strong>
-                <small>按需送到家，不用搬运</small>
-              </span>
-            </label>
-            <label class="choice">
-              <input type="radio" name="scenario" value="office" />
-              <span class="choice__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><path d="M4 21V7l8-4 8 4v14h-6v-5h-4v5H4Zm3-3h2v-2H7v2Zm0-4h2v-2H7v2Zm0-4h2V8H7v2Zm4 4h2v-2h-2v2Zm0-4h2V8h-2v2Zm4 4h2v-2h-2v2Zm0-4h2V8h-2v2Z"/></svg>
-              </span>
-              <span>
-                <strong>办公室接待</strong>
-                <small>会议、茶水间、客户来访</small>
-              </span>
-            </label>
-            <label class="choice">
-              <input type="radio" name="scenario" value="tea" />
-              <span class="choice__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><path d="M5 5h12v6a6 6 0 0 1-12 0V5Zm14 2h1a3 3 0 0 1 0 6h-1v-2h1a1 1 0 0 0 0-2h-1V7ZM5 19h14v2H5v-2Z"/></svg>
-              </span>
-              <span>
-                <strong>泡茶/茶室</strong>
-                <small>泡茶水，茶台先试</small>
-              </span>
-            </label>
-            <label class="choice">
-              <input type="radio" name="scenario" value="gift" />
-              <span class="choice__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><path d="M20 7h-2.2A3 3 0 0 0 12 5.2 3 3 0 0 0 6.2 7H4v14h16V7ZM9 5a1 1 0 0 1 1 1v1H8a1 1 0 0 1 1-2Zm6 0a1 1 0 0 1 1 2h-2V6a1 1 0 0 1 1-1ZM6 9h5v10H6V9Zm12 10h-5V9h5v10Z"/></svg>
-              </span>
-              <span>
-                <strong>商务送礼</strong>
-                <small>客户、领导、节礼</small>
-              </span>
-            </label>
-            <label class="choice">
-              <input type="radio" name="scenario" value="conference" />
-              <span class="choice__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><path d="M3 5h18v10H3V5Zm2 2v6h14V7H5Zm2 12v-2h10v2H7Z"/></svg>
-              </span>
-              <span>
-                <strong>企业福利/会务</strong>
-                <small>批量消耗，优先算总账</small>
-              </span>
-            </label>
-          </fieldset>
-
-          <div class="form-row">
-            <label for="people">预计覆盖人数</label>
-            <div class="counter">
-              <button type="button" data-counter="-1" aria-label="减少人数">−</button>
-              <input id="people" name="people" type="number" min="1" max="30" value="3" />
-              <button type="button" data-counter="1" aria-label="增加人数">+</button>
-            </div>
-          </div>
-
-          <fieldset class="priority-grid">
-            <legend>现在最在意什么</legend>
-            <label class="choice choice--compact is-selected">
-              <input type="radio" name="priority" value="value" checked />
-              <span>
-                <strong>性价比</strong>
-                <small>先把账算清楚</small>
-              </span>
-            </label>
-            <label class="choice choice--compact">
-              <input type="radio" name="priority" value="taste" />
-              <span>
-                <strong>口感</strong>
-                <small>先试喝再决定</small>
-              </span>
-            </label>
-            <label class="choice choice--compact">
-              <input type="radio" name="priority" value="delivery" />
-              <span>
-                <strong>配送</strong>
-                <small>别囤货别搬水</small>
-              </span>
-            </label>
-            <label class="choice choice--compact">
-              <input type="radio" name="priority" value="prestige" />
-              <span>
-                <strong>体面</strong>
-                <small>接待送礼有表达</small>
-              </span>
-            </label>
-          </fieldset>
-
-          <label class="toggle-line">
-            <input type="checkbox" name="hasEnterpriseResource" />
-            <span>这是办公室、礼赠或企业福利场景</span>
+        <form id="advisorForm" class="advisor-form">
+          <label>
+            <span>主要用途</span>
+            <select name="scenario">
+              <option value="family_drink">家里长期喝</option>
+              <option value="parents">给父母长辈</option>
+              <option value="office">办公室接待</option>
+              <option value="tea">泡茶 / 茶室</option>
+              <option value="gift">商务礼赠</option>
+              <option value="conference">企业福利 / 会务</option>
+            </select>
           </label>
-
-          <button class="primary-action" type="submit">
-            <span>生成购买建议</span>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M13 5 20 12l-7 7-1.4-1.4 4.6-4.6H4v-2h12.2l-4.6-4.6L13 5Z"/>
-            </svg>
+          <label>
+            <span>预计使用人数</span>
+            <input name="people" type="number" min="1" max="50" value="3" required />
+          </label>
+          <button class="primary-button" type="submit">
+            <span>给我购水建议</span>
+            <span aria-hidden="true">→</span>
           </button>
         </form>
+        <div id="advisorResult" class="advisor-result is-hidden" aria-live="polite"></div>
       </section>
 
-      <section id="result" class="result is-hidden" aria-live="polite">
-        <div class="result-head">
-          <p class="eyebrow eyebrow--dark">AI 购买建议</p>
-          <h2 id="resultTitle">推荐方案</h2>
-          <p id="resultReason"></p>
-        </div>
-
-        <article class="recommend-card">
-          <img id="productImage" class="recommend-card__image" src="./assets/manual/family.jpg" alt="" />
+      <section id="catalog" class="catalog section-shell" aria-labelledby="catalog-title">
+        <div class="section-heading section-heading--split">
           <div>
-            <span>推荐型号</span>
-            <strong id="productName">-</strong>
-            <small id="productSpec">-</small>
+            <p class="eyebrow eyebrow--blue">四种规格 · 三档购卡量</p>
+            <h2 id="catalog-title">同一款水，长期购买每张更划算。</h2>
           </div>
-          <div>
-            <span>推荐路径</span>
-            <strong id="packageName">-</strong>
-            <small id="packageRole">-</small>
+          <p>
+            先选瓶规，再比较六箱卡、半吨卡和一吨卡。
+            页面直接列出总价、水卡张数和折合每张价格，你可以自己算账。
+          </p>
+        </div>
+        <div id="catalogGrid" class="catalog-grid" aria-live="polite"></div>
+      </section>
+
+      <section id="benefits" class="benefits">
+        <div class="benefits__inner section-shell">
+          <div class="benefits__intro">
+            <p class="eyebrow">水卡怎么用</p>
+            <h2>买的是水卡，不是一次收走全部水。</h2>
+            <p>每张水卡对应一次六箱配送。半吨和一吨拆成多张卡，按实际需要分张安排。</p>
           </div>
-        </article>
-
-        <div id="signalPanel" class="metric-band"></div>
-
-        <div class="section-line">
-          <h3>AI 用量测算</h3>
-          <p>把规格换成用户能理解的天数和月成本。</p>
-        </div>
-        <article id="usageInsight" class="usage-card"></article>
-
-        <div class="section-line">
-          <h3>三档购买入口</h3>
-          <p>演示版只生成参数，不真实成交。</p>
-        </div>
-        <div id="packageList" class="package-list"></div>
-
-        <div class="section-line">
-          <h3>亲友拼单凑卡</h3>
-          <p>不改变水卡规格，只模拟多人共同凑成标准卡。</p>
-        </div>
-        <article id="groupOrderPanel" class="group-order-card"></article>
-
-        <div class="section-line">
-          <h3>AI 预答顾虑</h3>
-          <p>在客户犹豫前先把话说透。</p>
-        </div>
-        <div id="objectionList" class="objection-list"></div>
-
-        <div class="section-line">
-          <h3>分销商跟进</h3>
-          <p>生成可直接发微信的话术。</p>
-        </div>
-        <article class="follow-card">
-          <div class="follow-card__head">
-            <strong id="followTitle">跟进话术</strong>
-            <button id="copyShareButton" class="small-action" type="button">复制</button>
+          <div class="benefits__grid">
+            <article>
+              <span>01</span>
+              <h3>六箱先体验</h3>
+              <p>第一次先买一张卡，验证口感、规格和配送是否合适。</p>
+            </article>
+            <article>
+              <span>02</span>
+              <h3>长期卡更划算</h3>
+              <p>半吨和一吨包含多张水卡，购卡量越大，折合每张价格越低。</p>
+            </article>
+            <article>
+              <span>03</span>
+              <h3>分张安排配送</h3>
+              <p>每张按六箱权益使用，适合家庭、办公室、多地址或分批安排。</p>
+            </article>
           </div>
-          <p id="followShareText"></p>
-          <div class="follow-note">
-            <span>内部提示</span>
-            <p id="followInternalNote"></p>
-          </div>
-          <div class="follow-note">
-            <span>电话开场</span>
-            <p id="followCallScript"></p>
-          </div>
-        </article>
-
-        <div class="section-line">
-          <h3>说明书精华</h3>
-          <p>按场景自动露出，不再藏在按钮里。</p>
         </div>
-        <div id="educationList" class="education-list"></div>
+      </section>
 
-        <div class="section-line">
-          <h3>也可以换型号</h3>
-          <p>同一个价格等级下切换。</p>
+      <section class="steps section-shell" aria-labelledby="steps-title">
+        <div class="section-heading">
+          <p class="eyebrow eyebrow--blue">购买流程</p>
+          <h2 id="steps-title">选好规格，三步完成。</h2>
         </div>
-        <div id="alternativeList" class="alternative-list"></div>
-
-        <div class="section-line">
-          <h3>AI 还能赋能</h3>
-          <p>从演示版扩展到真实经营系统。</p>
+        <div class="steps__grid">
+          <article>
+            <span>01</span>
+            <h3>选规格和购卡量</h3>
+            <p>确认瓶规，再选择六箱、半吨或一吨。</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>填地址</h3>
+            <p>填写收货人、手机号、省市区和门牌号。</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>完成付款</h3>
+            <p>付款后点一次通知，到账确认后安排后续配送。</p>
+          </article>
         </div>
-        <div id="enablementList" class="enablement-list"></div>
       </section>
     </main>
 
-    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <footer>
+      <img src="./assets/brand/5100-logo.png" alt="" />
+      <div>
+        <strong>赫远数智科技（深圳）有限公司</strong>
+        <p>5100 水卡服务</p>
+      </div>
+    </footer>
 
     <dialog id="orderDialog" class="order-dialog">
-      <form method="dialog">
-        <div class="dialog-head">
-          <div>
-            <p class="eyebrow eyebrow--dark">演示下单参数</p>
-            <h2>演示接口参数</h2>
-          </div>
-          <button class="icon-button" value="close" aria-label="关闭">×</button>
+      <form id="orderForm">
+        <button class="dialog-close" type="button" data-close aria-label="关闭">×</button>
+        <div class="dialog-heading">
+          <p class="eyebrow eyebrow--blue">确认购买</p>
+          <h2>填写收货信息</h2>
+          <p>请填写本次配送需要的收货信息，提交后查看付款方式。</p>
         </div>
-        <p id="dialogMessage" class="dialog-copy"></p>
-        <pre id="orderParams" class="params-box"></pre>
-        <button class="primary-action" value="close" type="submit">我知道了</button>
+
+        <div id="selectedProductSummary" class="selected-product" aria-live="polite"></div>
+
+        <div id="orderFields" class="order-fields">
+          <label>
+            <span>收货人</span>
+            <input
+              name="name"
+              type="text"
+              maxlength="24"
+              autocomplete="name"
+              required
+              placeholder="请输入真实收货人姓名"
+            />
+          </label>
+          <label>
+            <span>手机号码</span>
+            <input
+              name="phone"
+              type="tel"
+              inputmode="numeric"
+              maxlength="11"
+              pattern="1[3-9][0-9]{9}"
+              autocomplete="tel"
+              required
+              placeholder="中国大陆11位手机号"
+            />
+          </label>
+          <label class="field-wide">
+            <span>省 / 市 / 区</span>
+            <input
+              name="region"
+              type="text"
+              maxlength="64"
+              autocomplete="address-level2"
+              required
+              placeholder="例如：广东省 深圳市 南山区"
+            />
+          </label>
+          <label class="field-wide">
+            <span>详细地址</span>
+            <textarea
+              name="address"
+              maxlength="160"
+              autocomplete="street-address"
+              required
+              rows="3"
+              placeholder="街道、小区、楼栋、门牌号"
+            ></textarea>
+          </label>
+          <label class="consent field-wide">
+            <input name="privacyConsent" type="checkbox" required />
+            <span>同意仅将以上信息用于本次购卡、付款确认和配送。</span>
+          </label>
+
+          <button id="orderSubmitButton" class="primary-button field-wide" type="submit">
+            <span>提交订单</span>
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+
+        <section id="orderReceipt" class="order-receipt is-hidden" aria-live="polite">
+          <div class="order-receipt__summary">
+            <div><span>订单号</span><strong id="orderId">—</strong></div>
+            <div><span>应付金额</span><strong id="orderAmount">—</strong></div>
+            <p id="orderProduct">—</p>
+          </div>
+          <div id="paymentQrBlock" class="payment-qr is-hidden">
+            <a id="paymentQrLink" target="_blank" rel="noopener" aria-label="点开收款码大图">
+              <img id="paymentQr" alt="微信收款二维码" />
+              <small>点开大图后长按识别</small>
+            </a>
+            <div>
+              <span>付款前请核对收款方</span>
+              <strong id="paymentReceiver">—</strong>
+            </div>
+          </div>
+          <p id="paymentInstruction" class="payment-instruction">—</p>
+          <p id="paymentDisclosure" class="payment-disclosure">—</p>
+          <div id="paymentReportFields" class="payment-report is-hidden">
+            <button id="paymentReportButton" class="primary-button" type="button">
+              <span>我已付款，通知我们</span>
+              <span aria-hidden="true">→</span>
+            </button>
+            <small>付款结果以实际到账为准，到账确认后安排后续配送。</small>
+          </div>
+        </section>
+        <p id="orderMessage" class="form-message" role="status"></p>
       </form>
     </dialog>
 
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <script src="./app.js" type="module"></script>
   </body>
 </html>
